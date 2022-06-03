@@ -3,7 +3,7 @@
 <main class="login">
   
     <sectiom class="forms">
-        <form class="register">
+        <form class="Login">
             <!-- <h2> Register </h2> -->
                <h1>This is a Login page</h1>
             <input 
@@ -14,20 +14,19 @@
                 placeholder="password"
             
             />
-            <input type="submit" value="Register"/>
+            <input type="submit" value="Login"/>
         </form>
 
-        <form class="login"></form>
     </sectiom>
 </main>
 </template>
 
 <script>
-import {ref} from 'vue'
+//import {ref} from 'vue'
 export default{
     setup(){
-        const login_form = ref({});
-		const register_form = ref({});
+     //   const login_form = ref({});
+	//	const register_form = ref({});
     }
 }
 </script>

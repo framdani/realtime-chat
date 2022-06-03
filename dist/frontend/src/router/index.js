@@ -1,17 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const vue_router_1 = require("vue-router");
-const HomeView_vue_1 = require("../views/HomeView.vue");
 const routes = [
     {
         path: '/',
-        name: 'home',
-        component: HomeView_vue_1.default
-    },
-    {
-        path: '/about',
-        name: 'about',
-        component: () => Promise.resolve().then(() => require('../views/AboutView.vue'))
+        name: 'Login',
+        component: () => Promise.resolve().then(() => require('../views/LoginView.vue'))
     }
 ];
 const router = (0, vue_router_1.createRouter)({
