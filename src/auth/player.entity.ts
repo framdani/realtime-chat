@@ -6,10 +6,14 @@ export class player extends BaseEntity{
     @PrimaryGeneratedColumn()
     id:number;
 
-    @Column()
+    @Column({unique:true})
     username:string;
 
-    @Column()
+    @Column()//{select:false}
     password:string;
+
+    async validatePassword(password:string):Promise<boolean> {
+        return password === this.password;
+    }
 
 }

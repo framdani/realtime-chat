@@ -12,13 +12,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.player = void 0;
 const typeorm_1 = require("typeorm");
 let player = class player extends typeorm_1.BaseEntity {
+    async validatePassword(password) {
+        return password === this.password;
+    }
 };
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
 ], player.prototype, "id", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({ unique: true }),
     __metadata("design:type", String)
 ], player.prototype, "username", void 0);
 __decorate([

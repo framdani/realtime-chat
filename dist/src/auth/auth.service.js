@@ -21,8 +21,16 @@ let AuthService = class AuthService {
         this.PlayerRepository = PlayerRepository;
         console.log("called !");
     }
+    async signUp(AuthCredentials) {
+        return this.PlayerRepository.createUser(AuthCredentials);
+    }
     async getUsers() {
         return this.PlayerRepository.getUsers();
+    }
+    async login(AuthCredentials) {
+        const result = await this.PlayerRepository.validateUserPassword(AuthCredentials);
+        if (!result)
+            throw new common_1.UnauthorizedException('Invalid credentials');
     }
 };
 AuthService = __decorate([

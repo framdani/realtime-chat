@@ -7,21 +7,40 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.playerRepository = void 0;
+const common_1 = require("@nestjs/common");
 const typeorm_1 = require("typeorm");
 const player_entity_1 = require("./player.entity");
 let playerRepository = class playerRepository extends typeorm_1.Repository {
-    async createUser(AuthDto) {
-        const { username, password } = AuthDto;
+    async createUser(AuthCredentials) {
+        const { username, password } = AuthCredentials;
         const User = new player_entity_1.player();
         User.username = username;
         User.password = password;
-        await User.save();
-        return User;
+        try {
+            await User.save();
+            return User;
+        }
+        catch (error) {
+            if (error.code === '23505')
+                throw new common_1.ConflictException('Username already exists');
+            else
+                throw new common_1.InternalServerErrorException();
+        }
     }
     async getUsers() {
         const query = this.createQueryBuilder('player');
         const users = await query.getMany();
         return users;
+    }
+    async validateUserPassword(AuthCredentials) {
+        const { username, password } = AuthCredentials;
+        const user = await this.findOne({ username });
+        if (user && await user.validatePassword(password)) {
+            return user.username;
+        }
+        else {
+            return null;
+        }
     }
 };
 playerRepository = __decorate([

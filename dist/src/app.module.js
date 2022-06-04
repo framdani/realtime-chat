@@ -17,7 +17,8 @@ let AppModule = class AppModule {
 };
 AppModule = __decorate([
     (0, common_1.Module)({
-        imports: [serve_static_1.ServeStaticModule.forRoot({
+        imports: [
+            serve_static_1.ServeStaticModule.forRoot({
                 rootPath: (0, path_1.join)(__dirname, '..', 'frontend/dist'),
             }),
             typeorm_1.TypeOrmModule.forRoot(typeorm_config_1.typeOrmConfig),

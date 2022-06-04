@@ -11,8 +11,8 @@ import { AuthService } from './auth/auth.service';
 
 
 @Module({
-  imports:
-   [ServeStaticModule.forRoot({
+  imports:[
+   ServeStaticModule.forRoot({
     rootPath: join(__dirname, '..', 'frontend/dist'), 
   }),
   TypeOrmModule.forRoot(typeOrmConfig),

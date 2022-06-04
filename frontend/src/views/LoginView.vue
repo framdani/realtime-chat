@@ -24,9 +24,18 @@
 <script>
 //import {ref} from 'vue'
 export default{
-    setup(){
-     //   const login_form = ref({});
-	//	const register_form = ref({});
+    //properties will be exposed on this
+    data(){
+        return 0
+    },
+    //functions that mutate state
+    methods :{
+
+    },
+    //lifecycle hooks
+
+    mounted(){
+        console.log('lgoin form')
     }
 }
 </script>

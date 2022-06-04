@@ -1,7 +1,8 @@
 import { Repository } from "typeorm";
-import { AuthDto } from "./dto/auth-user";
+import { AuthCredentials } from "./dto/auth-credentials";
 import { player } from "./player.entity";
 export declare class playerRepository extends Repository<player> {
-    createUser(AuthDto: AuthDto): Promise<player>;
+    createUser(AuthCredentials: AuthCredentials): Promise<player>;
     getUsers(): Promise<player[]>;
+    validateUserPassword(AuthCredentials: AuthCredentials): Promise<string>;
 }
