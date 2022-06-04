@@ -6,5 +6,7 @@ export declare class AuthController {
     constructor(AuthService: AuthService);
     getUsers(): Promise<player[]>;
     createUser(AuthCredentials: AuthCredentials): Promise<player>;
-    login(AuthCredentials: AuthCredentials): Promise<void>;
+    login(AuthCredentials: AuthCredentials): Promise<{
+        accessToken: string;
+    }>;
 }

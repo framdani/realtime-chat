@@ -14,12 +14,13 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
+const jwt_1 = require("@nestjs/jwt");
 const typeorm_1 = require("@nestjs/typeorm");
 const player_repository_1 = require("./player.repository");
 let AuthService = class AuthService {
-    constructor(PlayerRepository) {
+    constructor(PlayerRepository, jwtService) {
         this.PlayerRepository = PlayerRepository;
-        console.log("called !");
+        this.jwtService = jwtService;
     }
     async signUp(AuthCredentials) {
         return this.PlayerRepository.createUser(AuthCredentials);
@@ -28,15 +29,19 @@ let AuthService = class AuthService {
         return this.PlayerRepository.getUsers();
     }
     async login(AuthCredentials) {
-        const result = await this.PlayerRepository.validateUserPassword(AuthCredentials);
-        if (!result)
+        const username = await this.PlayerRepository.validateUserPassword(AuthCredentials);
+        if (!username)
             throw new common_1.UnauthorizedException('Invalid credentials');
+        const payload = { username };
+        const accessToken = await this.jwtService.sign(payload);
+        return { accessToken };
     }
 };
 AuthService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(player_repository_1.playerRepository)),
-    __metadata("design:paramtypes", [player_repository_1.playerRepository])
+    __metadata("design:paramtypes", [player_repository_1.playerRepository,
+        jwt_1.JwtService])
 ], AuthService);
 exports.AuthService = AuthService;
 //# sourceMappingURL=auth.service.js.map

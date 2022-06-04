@@ -1,14 +1,15 @@
-import { Body, Controller, Get, Post, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthCredentials } from './dto/auth-credentials';
 import { player } from './player.entity';
-
-@Controller('auth')
+import {AuthGuard} from '@nestjs/passport'
+@Controller()
 export class AuthController {
 
     constructor (private AuthService:AuthService){}
 
     @Get('users')
+    @UseGuards(AuthGuard())
     getUsers():Promise<player[]>{
         return this.AuthService.getUsers();
     }
@@ -21,7 +22,7 @@ export class AuthController {
 
     @Post('login')
     @UsePipes(ValidationPipe)
-    login(@Body() AuthCredentials:AuthCredentials){
+    login(@Body() AuthCredentials:AuthCredentials):Promise<{accessToken : string}>{
         return this.AuthService.login(AuthCredentials);
     }
 }
