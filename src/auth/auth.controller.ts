@@ -9,12 +9,12 @@ export class AuthController {
     constructor (private AuthService:AuthService){}
 
     @Get('users')
-    @UseGuards(AuthGuard())
+   //@UseGuards(AuthGuard())
     getUsers():Promise<player[]>{
         return this.AuthService.getUsers();
     }
 
-    @Post('signup')
+    @Post('/signup')
     @UsePipes(ValidationPipe)
     createUser(@Body() AuthCredentials:AuthCredentials):Promise<player>{
        return this.AuthService.signUp(AuthCredentials);     
