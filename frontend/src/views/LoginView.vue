@@ -51,9 +51,11 @@ export default {
              {//store this token
                 if (response.data.accessToken)
                     localStorage.setItem('user', JSON.stringify(response.data) );
+                    
+                   axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.accessToken}`
                // console.log(response.data.accessToken);
                     router.push({name:"Users"});
-                    alert(`Token received ! : ${response.data.accessToken}`);
+                  //  alert(`Token received ! : ${response.data.accessToken}`);
             });
         }
     },

@@ -54,6 +54,7 @@ router.beforeEach((to, from, next) => {
             next();
         }
         else {
+            alert(`Not allowed`);
             next('/');
         }
     }

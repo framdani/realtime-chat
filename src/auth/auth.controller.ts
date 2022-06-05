@@ -8,7 +8,7 @@ export class AuthController {
 
     constructor (private AuthService:AuthService){}
     
-    // @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard())
     @Get('/users')
     getUsers():Promise<player[]>{
         return this.AuthService.getUsers();

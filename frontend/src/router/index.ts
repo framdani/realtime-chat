@@ -83,9 +83,15 @@ router.beforeEach((to, from, next) => {
     if (isLoggedIn()) {
       next();
     } else {
-      next('/');
+      alert(`Not allowed`)
+     next('/');
+      // next({
+      //   path: '/login',
+      //   query: { redirect: to.fullPath }
+      // })
     }
   } else {
+   // alert(`Not allowed`)
     next();
   }
 });

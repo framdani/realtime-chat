@@ -48,6 +48,7 @@ export default {
           //         localStorage.setItem('user', "null");
           //  alert(`${localStorage.getItem('user')}`);
           localStorage.clear();
+          axios.defaults.headers.common['Authorization'] = ''
           //redirectin
           router.push({name:"home"});
         },
