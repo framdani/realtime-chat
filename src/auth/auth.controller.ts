@@ -7,20 +7,21 @@ import {AuthGuard} from '@nestjs/passport'
 export class AuthController {
 
     constructor (private AuthService:AuthService){}
-
-    @Get('users')
-   //@UseGuards(AuthGuard())
+    
+    // @UseGuards(AuthGuard())
+    @Get('/users')
     getUsers():Promise<player[]>{
         return this.AuthService.getUsers();
     }
 
     @Post('/signup')
     @UsePipes(ValidationPipe)
+   // @UseGuards(AuthGuard())
     createUser(@Body() AuthCredentials:AuthCredentials):Promise<player>{
        return this.AuthService.signUp(AuthCredentials);     
     }
 
-    @Post('login')
+    @Post('/login')
     @UsePipes(ValidationPipe)
     login(@Body() AuthCredentials:AuthCredentials):Promise<{accessToken : string}>{
         return this.AuthService.login(AuthCredentials);

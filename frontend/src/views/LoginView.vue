@@ -5,7 +5,7 @@
     <sectiom class="forms">
         <form class="Login" @submit.prevent="signup">
             <!-- <h2> Register </h2> -->
-               <h1> Regitration Form </h1>
+               <h1> Login Form </h1>
             <input 
             v-model="player.username"
             type="text" 
@@ -18,7 +18,7 @@
             
             />
             <br><br>
-            <button type="submit"> Register </button>
+            <button type="submit"> login </button>
         </form>
 
     </sectiom>
@@ -47,10 +47,18 @@ export default {
             this.__submitToServer(userdata);
         },
         __submitToServer(data){
-            axios.post(`${server.baseURL}/api/signup`, data).then(data => {router.push({name:"Login"});});
+            axios.post(`${server.baseURL}/api/login`, data).then(response =>
+             {//store this token
+                if (response.data.accessToken)
+                    localStorage.setItem('user', JSON.stringify(response.data) );
+               // console.log(response.data.accessToken);
+                    router.push({name:"Users"});
+                    alert(`Token received ! : ${response.data.accessToken}`);
+            });
         }
     },
 
 };
 
+//Get toekn let user = JSON.parse(localStorage.getItem('user'));
 </script>

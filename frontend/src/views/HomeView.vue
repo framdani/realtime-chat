@@ -1,5 +1,5 @@
 <template>
   <main class="home">
-    <h1>This is a home page</h1>
+    <h1>Welcome to our transcedence</h1>
   </main>
 </template>

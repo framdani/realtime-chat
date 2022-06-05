@@ -31,7 +31,7 @@ let AuthController = class AuthController {
     }
 };
 __decorate([
-    (0, common_1.Get)('users'),
+    (0, common_1.Get)('/users'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
@@ -45,7 +45,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "createUser", null);
 __decorate([
-    (0, common_1.Post)('login'),
+    (0, common_1.Post)('/login'),
     (0, common_1.UsePipes)(common_1.ValidationPipe),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
