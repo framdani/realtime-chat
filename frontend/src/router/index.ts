@@ -7,13 +7,12 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'home',
-    component: HomeView
+    component: HomeView,
+    meta: {
+      requiresAuth: false,
+    },
   },
-  // {
-  //   path: '/about',
-  //   name: 'about',
-  //   component: () => import('../views/AboutView.vue')
-  // },
+  
    {
     path: '/signup',
     name: 'Signup',
@@ -37,23 +36,12 @@ const routes: Array<RouteRecordRaw> = [
       meta: {
         requiresAuth: true,
       },
+      
       },
     //add path to chatroom
 ]
 
 
-
-// routes.beforeEach((to, from, next) => {
-//   if (to.matched.some((record) => record.meta.requiresAuth)) {
-//     if (isAuthenticated()) {
-//       next();
-//     } else {
-//       next("/");
-//     }
-//   } else {
-//     next();
-//   }
-// });
 
 //! check if the user is looged
 const router = createRouter({
@@ -64,34 +52,23 @@ const router = createRouter({
 export default router
 
 export function isLoggedIn() {
-  const token = JSON.parse(localStorage.getItem('user') || '');
-  if (token)
-  {
-    alert(`${localStorage.getItem('user')}`)
-    return true;
-  }
-  return false;
-  //return !!authToken && !isTokenExpired(authToken)
+  const val = localStorage.getItem('user');
+  if (val === null)
+    return false;
+  const token = JSON.parse(val);
+  
+  alert(`Token  : ${localStorage.getItem('user')}`)
+  return true;
 }
-
-// router.beforeEach((to, from, next) => {
-
-// })
 
 router.beforeEach((to, from, next) => {
   if (to.matched.some((record) => record.meta.requiresAuth)) {
     if (isLoggedIn()) {
       next();
     } else {
-      alert(`Not allowed`)
-     next('/');
-      // next({
-      //   path: '/login',
-      //   query: { redirect: to.fullPath }
-      // })
+    next('/login');
     }
   } else {
-   // alert(`Not allowed`)
-    next();
+   next();
   }
 });

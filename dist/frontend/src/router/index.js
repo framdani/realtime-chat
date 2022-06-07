@@ -7,7 +7,10 @@ const routes = [
     {
         path: '/',
         name: 'home',
-        component: HomeView_vue_1.default
+        component: HomeView_vue_1.default,
+        meta: {
+            requiresAuth: false,
+        },
     },
     {
         path: '/signup',
@@ -40,12 +43,12 @@ const router = (0, vue_router_1.createRouter)({
 });
 exports.default = router;
 function isLoggedIn() {
-    const token = JSON.parse(localStorage.getItem('user') || '');
-    if (token) {
-        alert(`${localStorage.getItem('user')}`);
-        return true;
-    }
-    return false;
+    const val = localStorage.getItem('user');
+    if (val === null)
+        return false;
+    const token = JSON.parse(val);
+    alert(`Token  : ${localStorage.getItem('user')}`);
+    return true;
 }
 exports.isLoggedIn = isLoggedIn;
 router.beforeEach((to, from, next) => {
@@ -54,8 +57,7 @@ router.beforeEach((to, from, next) => {
             next();
         }
         else {
-            alert(`Not allowed`);
-            next('/');
+            next('/login');
         }
     }
     else {
