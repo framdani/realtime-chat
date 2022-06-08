@@ -47,7 +47,9 @@ export default {
             this.__submitToServer(userdata);
         },
         __submitToServer(data){
-            axios.post(`${server.baseURL}/api/signup`, data).then(data => {router.push({name:"Login"});});
+            axios.post(`${server.baseURL}/api/signup`, data).then(
+                data => {router.push({name:"Login"});}
+                );
         }
     },
 

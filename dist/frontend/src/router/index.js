@@ -46,8 +46,6 @@ function isLoggedIn() {
     const val = localStorage.getItem('user');
     if (val === null)
         return false;
-    const token = JSON.parse(val);
-    alert(`Token  : ${localStorage.getItem('user')}`);
     return true;
 }
 exports.isLoggedIn = isLoggedIn;

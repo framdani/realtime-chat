@@ -55,9 +55,9 @@ export function isLoggedIn() {
   const val = localStorage.getItem('user');
   if (val === null)
     return false;
-  const token = JSON.parse(val);
+  // const token = JSON.parse(val);
   
-  alert(`Token  : ${localStorage.getItem('user')}`)
+  // alert(`Token  : ${token}`)
   return true;
 }
 

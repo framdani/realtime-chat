@@ -34,14 +34,17 @@ export default {
             players:[],
         };
     },
-    created() {
+   mounted() {
     this.fetchUsers();
      },
 
 
     methods:{
         fetchUsers(){
-        axios.get(`${server.baseURL}/api/users`).then(data => (this.players = data.data));},
+        axios.get(`${server.baseURL}/api/users`, {headers:{'Authorization' : `Bearer ${localStorage.getItem('user')}`}}).then(
+          data => {(this.players = data.data);
+        // axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('user')}`;}
+    })},
         logout(){ 
           //         localStorage.removeItem('user');
           //       axios.defaults.headers.common['Authorization'] = '';

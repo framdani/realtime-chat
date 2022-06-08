@@ -3,7 +3,7 @@
 <main class="login">
   
     <section class="forms">
-        <form class="Login" @submit.prevent="signup">
+        <form class="Login" @submit.prevent="signin">
             <!-- <h2> Register </h2> -->
                <h1> Login Form </h1>
             <input 
@@ -39,7 +39,7 @@ export default {
         };
     },
     methods:{
-        signup(){
+        signin(){
             let userdata = {
                 username : this.player.username,
                 password : this.player.password,
@@ -50,7 +50,8 @@ export default {
             axios.post(`${server.baseURL}/api/login`, data).then(response =>
              {//store this token
                 if (response.data.accessToken)
-                    localStorage.setItem('user', JSON.stringify(response.data) );
+                    localStorage.setItem('user', response.data.accessToken);
+                  //  localStorage.setItem('user', JSON.stringify(response.data) );
                     
                    axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.accessToken}`
                // console.log(response.data.accessToken);
