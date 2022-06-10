@@ -7,6 +7,11 @@ import { typeOrmConfig } from './config/typeorm.config';
 import { AuthModule } from './auth/auth.module';
 import { AuthController } from './auth/auth.controller';
 import { AuthService } from './auth/auth.service';
+import { ChatModule } from './chat/chat.module';
+import { playerRepository } from './auth/player.repository';
+import { roomRepository } from './chat/room.repository';
+import { RoomService } from './room/room.service';
+import { RoomService } from './room/room.service';
 
 
 
@@ -17,8 +22,10 @@ import { AuthService } from './auth/auth.service';
   }),
   TypeOrmModule.forRoot(typeOrmConfig),
   AuthModule,
+  ChatModule,
+  TypeOrmModule.forFeature([playerRepository, roomRepository])
 ],
   controllers: [],
-  providers: [],
+  providers: [RoomService],
 })
 export class AppModule {}

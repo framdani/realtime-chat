@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.player = void 0;
+const room_entity_1 = require("../chat/room.entity");
 const typeorm_1 = require("typeorm");
 let player = class player extends typeorm_1.BaseEntity {
     async validatePassword(password) {
@@ -28,6 +29,10 @@ __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], player.prototype, "password", void 0);
+__decorate([
+    (0, typeorm_1.ManyToMany)(() => room_entity_1.room, channel => channel.players),
+    __metadata("design:type", Array)
+], player.prototype, "rooms", void 0);
 player = __decorate([
     (0, typeorm_1.Entity)()
 ], player);

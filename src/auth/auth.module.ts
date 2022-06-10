@@ -6,6 +6,7 @@ import { playerRepository } from './player.repository';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule} from '@nestjs/passport'
 import { JwtStrategy } from './jwt.strategy';
+import { roomRepository } from 'src/chat/room.repository';
 @Module({
   imports:[ 
     PassportModule.register({defaultStrategy:'jwt'}),
@@ -17,7 +18,7 @@ import { JwtStrategy } from './jwt.strategy';
         }
       }
     ),
-    TypeOrmModule.forFeature([playerRepository]),],
+    TypeOrmModule.forFeature([playerRepository, roomRepository]),],
   controllers: [AuthController],
   providers: [
     AuthService,
