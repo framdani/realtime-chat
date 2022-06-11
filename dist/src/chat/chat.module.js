@@ -13,12 +13,13 @@ const player_repository_1 = require("../auth/player.repository");
 const chat_gateway_1 = require("./gateway/chat.gateway");
 const room_repository_1 = require("./room.repository");
 const chat_service_1 = require("./chat.service");
+const room_service_1 = require("./room/room.service");
 let ChatModule = class ChatModule {
 };
 ChatModule = __decorate([
     (0, common_1.Module)({
         imports: [typeorm_1.TypeOrmModule.forFeature([room_repository_1.roomRepository, player_repository_1.playerRepository]),],
-        providers: [chat_gateway_1.ChatGateway, chat_service_1.ChatService]
+        providers: [chat_gateway_1.ChatGateway, chat_service_1.ChatService, room_service_1.RoomService]
     })
 ], ChatModule);
 exports.ChatModule = ChatModule;

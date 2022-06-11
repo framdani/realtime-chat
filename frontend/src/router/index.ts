@@ -38,6 +38,15 @@ const routes: Array<RouteRecordRaw> = [
       },
       
       },
+      {
+        path: '/dashboard',
+        name: 'Dashboard',
+        component: () => import('../views/chatroomView.vue'),
+        meta: {
+          requiresAuth: true,
+        },
+        
+        },
     //add path to chatroom
 ]
 

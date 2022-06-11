@@ -36,6 +36,14 @@ const routes = [
             requiresAuth: true,
         },
     },
+    {
+        path: '/dashboard',
+        name: 'Dashboard',
+        component: () => Promise.resolve().then(() => require('../views/chatroomView.vue')),
+        meta: {
+            requiresAuth: true,
+        },
+    },
 ];
 const router = (0, vue_router_1.createRouter)({
     history: (0, vue_router_1.createWebHistory)(process.env.BASE_URL),

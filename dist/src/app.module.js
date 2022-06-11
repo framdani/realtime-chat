@@ -14,8 +14,6 @@ const path_1 = require("path");
 const typeorm_config_1 = require("./config/typeorm.config");
 const auth_module_1 = require("./auth/auth.module");
 const chat_module_1 = require("./chat/chat.module");
-const player_repository_1 = require("./auth/player.repository");
-const room_repository_1 = require("./chat/room.repository");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -27,7 +25,6 @@ AppModule = __decorate([
             typeorm_1.TypeOrmModule.forRoot(typeorm_config_1.typeOrmConfig),
             auth_module_1.AuthModule,
             chat_module_1.ChatModule,
-            typeorm_1.TypeOrmModule.forFeature([player_repository_1.playerRepository, room_repository_1.roomRepository])
         ],
         controllers: [],
         providers: [],

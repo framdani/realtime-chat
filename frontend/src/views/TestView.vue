@@ -46,10 +46,6 @@ export default {
         // axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('user')}`;}
     })},
         logout(){ 
-          //         localStorage.removeItem('user');
-          //       axios.defaults.headers.common['Authorization'] = '';
-          //         localStorage.setItem('user', "null");
-          //  alert(`${localStorage.getItem('user')}`);
           localStorage.clear();
           axios.defaults.headers.common['Authorization'] = ''
           //redirectin
