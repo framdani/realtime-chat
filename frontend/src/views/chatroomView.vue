@@ -16,10 +16,11 @@
 import io from "socket.io-client"
 export default {
   name: 'App',
-  data: function() {
-    return {
+  data() {
+    return  {
         title:'',
-      connection: null
+        // titel:[],
+        connection: null
     }
   },
   methods: {
@@ -35,32 +36,22 @@ export default {
     })
     }
   },
+  created(){
+    this.connection = io('http://127.0.0.1:3000', {extraHeaders: { Authorization : `Bearer ${localStorage.getItem('user')}`}})
+    alert(`Connection started ...`)
+  //  console.log(`${localStorage.getItem('user')}`)
+  },
   mounted(){
-  //  console.log("Starting connection to WebSocket Server")
-  //  this.connection = new WebSocket("wss://echo.websocket.org") //http://localhost:3000
-        this.connection = io('http://127.0.0.1:3000')
-        
-        this.connection.emit("Message", 'hey')
-
-        this.connection.on("sendMesssage", (data) => {this.title = data;console.log("++"+data)})
+  
+        console.log(this.title);
+        this.connection.on("message", (data) => {this.title = data;console.log("++"+data)})
        // console.log(this.title)
     
-   setInterval(() => {
-        this.connection.emit("Message", new Date());
+  //  setInterval(() => {
+  //       this.connection.emit("Message", new Date());
 
-    }, 5000)
-    // this.connection.onmessage = function(event) {
-    //  // console.log(event);
-    //  console.log("data received ...");
-    // }
-
-    // this.connection.onopen = function(event) {
-    //     console.log(`[Connection established ...]`)
-    // }
-    // this.connection.onerror = function(error){
-    // //    alert($error.message)
-    // alert(`ERROR !`)
-    // }
+  //   }, 5000)
+ 
         
 
   }
