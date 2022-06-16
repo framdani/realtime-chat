@@ -25,6 +25,8 @@ export class AuthService {
         return this.PlayerRepository.getUsers();
     }
 
+   async getUserById(username:string):Promise<player>{return this.PlayerRepository.getUserById(username);}
+
     async login(AuthCredentials:AuthCredentials):Promise<{accessToken : string}>{
         const username= await this.PlayerRepository.validateUserPassword(AuthCredentials);
         if (!username)
@@ -35,4 +37,8 @@ export class AuthService {
        const accessToken = await this.jwtService.sign(payload);
        return {accessToken};
     }
+
+    verifyJwt(jwt: string): Promise<any> {
+        return this.jwtService.verifyAsync(jwt);
+      }
 }

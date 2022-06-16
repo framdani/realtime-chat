@@ -6,19 +6,12 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.roomRepository = void 0;
-const room_entity_1 = require("./room.entity");
-const typeorm_1 = require("typeorm");
-let roomRepository = class roomRepository extends typeorm_1.Repository {
-    async createRoom(RoomDto) {
-        const { name } = RoomDto;
-        const Room = new room_entity_1.room();
-        Room.name = name;
-        return Room;
-    }
+exports.RoomService = void 0;
+const common_1 = require("@nestjs/common");
+let RoomService = class RoomService {
 };
-roomRepository = __decorate([
-    (0, typeorm_1.EntityRepository)(room_entity_1.room)
-], roomRepository);
-exports.roomRepository = roomRepository;
-//# sourceMappingURL=room.repository.js.map
+RoomService = __decorate([
+    (0, common_1.Injectable)()
+], RoomService);
+exports.RoomService = RoomService;
+//# sourceMappingURL=room.service.js.map

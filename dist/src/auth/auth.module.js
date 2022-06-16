@@ -34,10 +34,10 @@ AuthModule = __decorate([
         providers: [
             auth_service_1.AuthService,
             jwt_strategy_1.JwtStrategy,
+            auth_service_1.AuthService,
         ],
         exports: [
-            jwt_strategy_1.JwtStrategy,
-            passport_1.PassportModule,
+            auth_service_1.AuthService
         ],
     })
 ], AuthModule);

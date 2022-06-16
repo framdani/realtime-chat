@@ -23,10 +23,12 @@ import { roomRepository } from 'src/chat/room.repository';
   providers: [
     AuthService,
     JwtStrategy,
+    AuthService,
   ],
   exports:[
-    JwtStrategy,
-    PassportModule,
+   // JwtStrategy,
+    //PassportModule,
+    AuthService
   ],
 })
 export class AuthModule {}

@@ -10,20 +10,38 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ChatGateway = void 0;
+const common_1 = require("@nestjs/common");
 const websockets_1 = require("@nestjs/websockets");
 const socket_io_1 = require("socket.io");
+const auth_service_1 = require("../../auth/auth.service");
 let ChatGateway = class ChatGateway {
-    constructor() {
+    constructor(authService) {
+        this.authService = authService;
         this.user = [];
+        this.title = [];
     }
     afterInit(server) {
     }
-    handleConnection(client) {
-        console.log(client.handshake.headers.authorization);
-        this.user.push(client);
-        console.log(`On Connnect ... !${client.id} `);
-        this.server.emit('message', `${client.id}`);
-        console.log("sent");
+    async handleConnection(client) {
+        try {
+            this.decoded = client.handshake.headers.authorization.split(" ")[1];
+            this.decoded = await this.authService.verifyJwt(this.decoded);
+            this.player = await this.authService.getUserById(this.decoded.username);
+            if (!this.player)
+                return this.disconnect(client);
+            this.user.push(client);
+            this.title.push(`${client.id}`);
+            console.log(`On Connnect ... !${client.id} `);
+            this.server.emit('message', this.title);
+            console.log("sent");
+        }
+        catch (_a) {
+            return this.disconnect(client);
+        }
+    }
+    disconnect(socket) {
+        socket.emit('Error', new common_1.UnauthorizedException());
+        socket.disconnect();
     }
     handleDisconnect(client) {
         console.log(`On Disconnet ... ! ${client.id}`);
@@ -34,7 +52,8 @@ __decorate([
     __metadata("design:type", socket_io_1.Server)
 ], ChatGateway.prototype, "server", void 0);
 ChatGateway = __decorate([
-    (0, websockets_1.WebSocketGateway)({ cors: { origini: 'http://localhost:3000' } })
+    (0, websockets_1.WebSocketGateway)({ cors: { origini: 'http://localhost:3000' } }),
+    __metadata("design:paramtypes", [auth_service_1.AuthService])
 ], ChatGateway);
 exports.ChatGateway = ChatGateway;
 //# sourceMappingURL=chat.gateway.js.map

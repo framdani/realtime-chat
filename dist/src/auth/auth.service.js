@@ -28,6 +28,7 @@ let AuthService = class AuthService {
     async getUsers() {
         return this.PlayerRepository.getUsers();
     }
+    async getUserById(username) { return this.PlayerRepository.getUserById(username); }
     async login(AuthCredentials) {
         const username = await this.PlayerRepository.validateUserPassword(AuthCredentials);
         if (!username)
@@ -35,6 +36,9 @@ let AuthService = class AuthService {
         const payload = { username };
         const accessToken = await this.jwtService.sign(payload);
         return { accessToken };
+    }
+    verifyJwt(jwt) {
+        return this.jwtService.verifyAsync(jwt);
     }
 };
 AuthService = __decorate([

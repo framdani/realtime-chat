@@ -6,11 +6,11 @@ export class RoomDto{
     name:string;
     
    // @IsNotEmpty()
-    isChannel:boolean;
+  //   isChannel:boolean;
 
-   // @IsNotEmpty()
-    isPublic:boolean;
+  //  // @IsNotEmpty()
+  //   isPublic:boolean;
 
-  //  @IsOptional()
-    password:string;
+  // //  @IsOptional()
+  //   password:string;
 }

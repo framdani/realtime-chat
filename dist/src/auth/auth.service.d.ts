@@ -8,7 +8,9 @@ export declare class AuthService {
     constructor(PlayerRepository: playerRepository, jwtService: JwtService);
     signUp(AuthCredentials: AuthCredentials): Promise<player>;
     getUsers(): Promise<player[]>;
+    getUserById(username: string): Promise<player>;
     login(AuthCredentials: AuthCredentials): Promise<{
         accessToken: string;
     }>;
+    verifyJwt(jwt: string): Promise<any>;
 }
