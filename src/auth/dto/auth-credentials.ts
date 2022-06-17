@@ -8,5 +8,5 @@ export class AuthCredentials{
     username:string;
 
     @IsNotEmpty()
-    password:string;//yawdi yawdi 
+    password:string;
 }

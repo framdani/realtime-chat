@@ -1,6 +1,5 @@
 import { player } from "src/auth/player.entity";
 export declare class RoomDto {
-    id: number;
     name: string;
     isChannel: boolean;
     isPublic: boolean;

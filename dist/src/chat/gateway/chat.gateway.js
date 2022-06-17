@@ -35,10 +35,11 @@ let ChatGateway = class ChatGateway {
                 return this.disconnect(client);
             }
             client.data.player = player_entity_1.player;
-            const rooms = this.roomService.getRoomsForUser(this.decoded.id);
+            const rooms = await this.roomService.getRoomsForUser(this.decoded.id);
             this.user.push(client);
             this.title.push(`${client.id}`);
             console.log(`On Connnect ... !${client.id} `);
+            console.log(rooms);
             return this.server.to(client.id).emit('message', rooms);
         }
         catch (_a) {
@@ -53,7 +54,7 @@ let ChatGateway = class ChatGateway {
         console.log(`On Disconnet ... ! ${client.id}`);
     }
     async onCreateRoom(socket, room) {
-        return this.roomService.createRoom(room, socket.data.user);
+        return await this.roomService.createRoom(room, this.player);
     }
 };
 __decorate([

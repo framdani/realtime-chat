@@ -37,46 +37,40 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 //   }
 
   //after a client has connected 
-  afterInit(server: any) {
-
-    
+  afterInit(server: any) {    
   }
 
   //when a client joins the connection
   async handleConnection(client:Socket) {
-    try{
-    this.decoded = client.handshake.headers.authorization.split(" ")[1];
-    this.decoded = await this.authService.verifyJwt(this.decoded);
-    this.player = await this.authService.getUserById(this.decoded.id);
+    try
+    {
+      this.decoded = client.handshake.headers.authorization.split(" ")[1];
+      this.decoded = await this.authService.verifyJwt(this.decoded);
+      this.player = await this.authService.getUserById(this.decoded.id);
 
     // console.log(this.decoded.id);
     // console.log(this.player.username);
  
    if (!this.player)
-    {
-      return this.disconnect(client);
-    }
+    {return this.disconnect(client);}
 
   
       client.data.player = player;
-      const rooms = this.roomService.getRoomsForUser(this.decoded.id);
-   //if username doesn't exist close connection
+      const rooms = await this.roomService.getRoomsForUser(this.decoded.id);
+  
+      //if username doesn't exist close connection
 
     this.user.push(client);
     this.title.push(`${client.id}`);
     console.log(`On Connnect ... !${client.id} `)
-     
-   // this.roomService.createRoom();
    // this.server.emit('message', this.title)
     // this.user.map( x=> x.emit("message" ,`hey ${client.id}`));
-    //console.log("sent");
-    //only emit value to the concerned client
-    return this.server.to(client.id).emit('message', rooms);
-    }catch{
+  
+    //only emit value to the concerned client => for now there is no room
+    console.log(rooms);
+    return this.server.to(client.id).emit('message', rooms);//rooms
 
-      return this.disconnect(client);
-
-    }
+    }catch{return this.disconnect(client);}
   }
   private disconnect(socket: Socket) {
     socket.emit('Error', new UnauthorizedException());
@@ -87,7 +81,10 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   }
 
   @SubscribeMessage('createRoom')
-  async onCreateRoom(socket: Socket, room: RoomDto): Promise<room> {
-    return this.roomService.createRoom(room, socket.data.user)
+  async onCreateRoom(socket: Socket, room: RoomDto) :Promise<room>{
+   // console.log(this.player.username)
+   return await this.roomService.createRoom(room, this.player)
+  //  console.log(`${socket.id}`)
+  // console.log(room);
   }
 }

@@ -9,11 +9,13 @@ import { AuthModule } from 'src/auth/auth.module';
 import { AuthService } from 'src/auth/auth.service';
 import { JwtService } from '@nestjs/jwt';
 import { JwtStrategy } from 'src/auth/jwt.strategy';
+import { ChatController } from './chat.controller';
 
 
 @Module({
   imports:[AuthModule, TypeOrmModule.forFeature([roomRepository, playerRepository]),],
-  providers: [ChatGateway, RoomService], //ChatService, RoomService, JwtStrategy, AuthService],
+  providers: [ChatGateway, RoomService],
+  controllers: [ChatController], //ChatService, RoomService, JwtStrategy, AuthService],
 })
 
 export class ChatModule {}

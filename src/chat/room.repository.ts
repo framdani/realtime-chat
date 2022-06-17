@@ -15,7 +15,7 @@ export class roomRepository extends Repository<room>{
         Room.isChannel = isChannel;
         Room.isPublic = isPublic;
         Room.password = password;
-        Room.players.push(creator);
+        Room.players = [creator];
 
 
         await Room.save();

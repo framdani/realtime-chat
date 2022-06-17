@@ -17,7 +17,7 @@ let roomRepository = class roomRepository extends typeorm_1.Repository {
         Room.isChannel = isChannel;
         Room.isPublic = isPublic;
         Room.password = password;
-        Room.players.push(creator);
+        Room.players = [creator];
         await Room.save();
         return Room;
     }

@@ -4,7 +4,7 @@ import { player } from "src/auth/player.entity";
 export class RoomDto{
 
    // @IsNotEmpty()
-    id:number;
+   // id:number;
     name:string;
     
     isChannel:boolean;

@@ -2,7 +2,7 @@
  
 <main class="login">
   
-    <sectiom class="forms">
+    <section class="forms">
         <form class="Login" @submit.prevent="signup">
             <!-- <h2> Register </h2> -->
                <h1> Regitration Form </h1>
@@ -21,7 +21,7 @@
             <button type="submit"> Register </button>
         </form>
 
-    </sectiom>
+    </section>
 </main>
 </template>
 

@@ -17,10 +17,7 @@ export class RoomService {
     }
 
     async getRoomsForUser(id:number):Promise<room[]>{
-     
-    
         return await this.roomRepository.getRoomsForUser(id);
-
     }
 
     //create room
