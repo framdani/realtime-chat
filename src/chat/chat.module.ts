@@ -13,7 +13,7 @@ import { JwtStrategy } from 'src/auth/jwt.strategy';
 
 @Module({
   imports:[AuthModule, TypeOrmModule.forFeature([roomRepository, playerRepository]),],
-  providers: [ChatGateway,], //ChatService, RoomService, JwtStrategy, AuthService],
+  providers: [ChatGateway, RoomService], //ChatService, RoomService, JwtStrategy, AuthService],
 })
 
 export class ChatModule {}

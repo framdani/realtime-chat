@@ -36,14 +36,14 @@ let playerRepository = class playerRepository extends typeorm_1.Repository {
         const { username, password } = AuthCredentials;
         const user = await this.findOne({ username });
         if (user && await user.validatePassword(password)) {
-            return user.username;
+            return user;
         }
         else {
             return null;
         }
     }
-    async getUserById(username) {
-        const user = await this.findOne({ username });
+    async getUserById(id) {
+        const user = await this.findOne({ id });
         if (user)
             return user;
         return null;

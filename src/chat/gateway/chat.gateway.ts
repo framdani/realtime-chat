@@ -1,8 +1,13 @@
 import { UnauthorizedException } from '@nestjs/common';
 import { OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
+import { Console } from 'console';
 import { Socket, Server } from 'socket.io';
 import { AuthService } from 'src/auth/auth.service';
 import { player } from 'src/auth/player.entity';
+import { RoomDto } from '../dto/room-dto';
+import { room } from '../room.entity';
+
+import { RoomService } from '../room.service';
 
 //enable the client to communicate with the server
 @WebSocketGateway({cors:{origini:'http://localhost:3000'}}) //'https://hoppscotch.io', 
@@ -16,7 +21,8 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   title:any[]=[];
   player:player;
 
-  constructor(private authService:AuthService){}
+
+  constructor(private authService:AuthService, private roomService:RoomService){}
   //send data to the client
 //   @SubscribeMessage('message')
 //   handleMessage(client: any, payload: any) {
@@ -41,21 +47,33 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     try{
     this.decoded = client.handshake.headers.authorization.split(" ")[1];
     this.decoded = await this.authService.verifyJwt(this.decoded);
-    this.player = await this.authService.getUserById(this.decoded.username);
+    this.player = await this.authService.getUserById(this.decoded.id);
+
+    // console.log(this.decoded.id);
+    // console.log(this.player.username);
  
    if (!this.player)
+    {
       return this.disconnect(client);
+    }
 
-
+  
+      client.data.player = player;
+      const rooms = this.roomService.getRoomsForUser(this.decoded.id);
    //if username doesn't exist close connection
 
     this.user.push(client);
     this.title.push(`${client.id}`);
     console.log(`On Connnect ... !${client.id} `)
-    this.server.emit('message', this.title)
+     
+   // this.roomService.createRoom();
+   // this.server.emit('message', this.title)
     // this.user.map( x=> x.emit("message" ,`hey ${client.id}`));
-    console.log("sent");
+    //console.log("sent");
+    //only emit value to the concerned client
+    return this.server.to(client.id).emit('message', rooms);
     }catch{
+
       return this.disconnect(client);
 
     }
@@ -66,5 +84,10 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   }
   handleDisconnect(client: any) {
     console.log(`On Disconnet ... ! ${client.id}`)
+  }
+
+  @SubscribeMessage('createRoom')
+  async onCreateRoom(socket: Socket, room: RoomDto): Promise<room> {
+    return this.roomService.createRoom(room, socket.data.user)
   }
 }

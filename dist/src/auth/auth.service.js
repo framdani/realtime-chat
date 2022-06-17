@@ -28,12 +28,14 @@ let AuthService = class AuthService {
     async getUsers() {
         return this.PlayerRepository.getUsers();
     }
-    async getUserById(username) { return this.PlayerRepository.getUserById(username); }
+    async getUserById(id) { return this.PlayerRepository.getUserById(id); }
     async login(AuthCredentials) {
-        const username = await this.PlayerRepository.validateUserPassword(AuthCredentials);
-        if (!username)
+        const user = await this.PlayerRepository.validateUserPassword(AuthCredentials);
+        if (!user)
             throw new common_1.UnauthorizedException('Invalid credentials');
-        const payload = { username };
+        const id = user.id;
+        const username = user.username;
+        const payload = { id, username };
         const accessToken = await this.jwtService.sign(payload);
         return { accessToken };
     }

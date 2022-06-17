@@ -37,7 +37,7 @@ export class playerRepository extends Repository<player>{
         return users;
     }
 
-    async validateUserPassword(AuthCredentials:AuthCredentials):Promise<string>{
+    async validateUserPassword(AuthCredentials:AuthCredentials):Promise<player>{
         const {username, password} = AuthCredentials;
 
         const user = await this.findOne({username});
@@ -45,15 +45,15 @@ export class playerRepository extends Repository<player>{
         // console.log(username);
         // console.log(password);
         if (user && await user.validatePassword(password)){
-            return user.username;
+            return user;
         }else{
             return null;
         }
           
     }
 
-    async getUserById(username:string):Promise<player>{
-        const user = await this.findOne({username});
+    async getUserById(id:number):Promise<player>{
+        const user = await this.findOne({id});
 
         if (user)
             return user;

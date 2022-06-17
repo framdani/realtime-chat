@@ -20,13 +20,16 @@ export default {
     return  {
         title:'',
         // titel:[],
-        connection: null
+        connection: null,
+
+        
     }
   },
   methods: {
     sendMessage: function() {
         console.log('Message sent !')
-      this.connection.emit("Message", 'hello from client')
+   
+       this.connection.emit("createRoom", 'bitch');
     },
     receiveMessage: function(){
         console.log('Messsage reieved !')
@@ -48,13 +51,13 @@ export default {
        // console.log(this.title)
     
   //  setInterval(() => {
-  //       this.connection.emit("Message", new Date());
+  //       this.data.room.players.push(1);
+  //       this.connection.emit("createRoom", this.data.room);
 
   //   }, 5000)
  
-        
-
   }
+  
 }
 </script>
 

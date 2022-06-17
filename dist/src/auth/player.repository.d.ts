@@ -4,6 +4,6 @@ import { player } from "./player.entity";
 export declare class playerRepository extends Repository<player> {
     createUser(AuthCredentials: AuthCredentials): Promise<player>;
     getUsers(): Promise<player[]>;
-    validateUserPassword(AuthCredentials: AuthCredentials): Promise<string>;
-    getUserById(username: string): Promise<player>;
+    validateUserPassword(AuthCredentials: AuthCredentials): Promise<player>;
+    getUserById(id: number): Promise<player>;
 }

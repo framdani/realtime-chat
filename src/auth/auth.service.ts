@@ -25,15 +25,16 @@ export class AuthService {
         return this.PlayerRepository.getUsers();
     }
 
-   async getUserById(username:string):Promise<player>{return this.PlayerRepository.getUserById(username);}
+   async getUserById(id:number):Promise<player>{return this.PlayerRepository.getUserById(id);}
 
     async login(AuthCredentials:AuthCredentials):Promise<{accessToken : string}>{
-        const username= await this.PlayerRepository.validateUserPassword(AuthCredentials);
-        if (!username)
+        const user= await this.PlayerRepository.validateUserPassword(AuthCredentials);
+        if (!user)
             throw new UnauthorizedException('Invalid credentials');
        // console.log(result);
-
-       const payload:JwtPyload= {username};
+        const id = user.id;
+        const username = user.username;
+       const payload:JwtPyload= {id,username};
        const accessToken = await this.jwtService.sign(payload);
        return {accessToken};
     }
