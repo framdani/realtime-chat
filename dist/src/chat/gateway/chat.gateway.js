@@ -14,7 +14,6 @@ const common_1 = require("@nestjs/common");
 const websockets_1 = require("@nestjs/websockets");
 const socket_io_1 = require("socket.io");
 const auth_service_1 = require("../../auth/auth.service");
-const player_entity_1 = require("../../auth/player.entity");
 const room_dto_1 = require("../dto/room-dto");
 const room_service_1 = require("../room.service");
 let ChatGateway = class ChatGateway {
@@ -34,7 +33,7 @@ let ChatGateway = class ChatGateway {
             if (!this.player) {
                 return this.disconnect(client);
             }
-            client.data.player = player_entity_1.player;
+            client.data.player = this.player;
             const rooms = await this.roomService.getRoomsForUser(this.decoded.id);
             this.user.push(client);
             this.title.push(`${client.id}`);
@@ -54,7 +53,9 @@ let ChatGateway = class ChatGateway {
         console.log(`On Disconnet ... ! ${client.id}`);
     }
     async onCreateRoom(socket, room) {
-        return await this.roomService.createRoom(room, this.player);
+        console.log(room);
+        console.log(socket.data.player);
+        return await this.roomService.createRoom(room, socket.data.player);
     }
 };
 __decorate([

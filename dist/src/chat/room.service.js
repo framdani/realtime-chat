@@ -26,6 +26,9 @@ let RoomService = class RoomService {
     async getRoomsForUser(id) {
         return await this.roomRepository.getRoomsForUser(id);
     }
+    async addUserToRoom(room, user) {
+        return await this.roomRepository.addUserToRoom(room, user);
+    }
 };
 RoomService = __decorate([
     (0, common_1.Injectable)(),

@@ -11,11 +11,12 @@ const room_entity_1 = require("./room.entity");
 const typeorm_1 = require("typeorm");
 let roomRepository = class roomRepository extends typeorm_1.Repository {
     async createRoom(RoomDto, creator) {
-        const { name, isChannel, isPublic, password } = RoomDto;
+        const { name, password } = RoomDto;
         const Room = new room_entity_1.room();
         Room.name = name;
-        Room.isChannel = isChannel;
-        Room.isPublic = isPublic;
+        Room.isChannel = true;
+        if (password)
+            Room.isPublic = false;
         Room.password = password;
         Room.players = [creator];
         await Room.save();
@@ -27,6 +28,10 @@ let roomRepository = class roomRepository extends typeorm_1.Repository {
             .where('player.id = :playerid', { playerid });
         const rooms = await query.getMany();
         return rooms;
+    }
+    async addUserToRoom(room, user) {
+        await room.players.push(user);
+        return room;
     }
 };
 roomRepository = __decorate([

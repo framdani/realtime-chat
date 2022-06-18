@@ -20,6 +20,9 @@ export class RoomService {
         return await this.roomRepository.getRoomsForUser(id);
     }
 
+    async addUserToRoom(room:room, user:player):Promise<room>{
+       return await this.roomRepository.addUserToRoom(room, user);
+    }
     //create room
     //add creator to room
     //getroomsfor user

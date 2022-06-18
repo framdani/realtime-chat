@@ -7,8 +7,8 @@ export class RoomDto{
    // id:number;
     name:string;
     
-    isChannel:boolean;
-    isPublic:boolean;
+    // isChannel:boolean;
+    // isPublic:boolean;
     password:string;
 
     players:player[];

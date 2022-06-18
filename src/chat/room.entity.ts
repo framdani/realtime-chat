@@ -10,10 +10,10 @@ export class room extends BaseEntity{
     @Column({unique:true})
     name:string;
 
-    @Column()
+    @Column({default:true})
     isChannel:boolean;
 
-    @Column()
+    @Column({default:true})
     isPublic:boolean;
 
     @Column()//{select:false}
@@ -28,5 +28,7 @@ export class room extends BaseEntity{
 
     @UpdateDateColumn()
     updated_at:Date;
+
+    
 
 }

@@ -55,7 +55,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     {return this.disconnect(client);}
 
   
-      client.data.player = player;
+      client.data.player = this.player;
       const rooms = await this.roomService.getRoomsForUser(this.decoded.id);
   
       //if username doesn't exist close connection
@@ -83,7 +83,9 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   @SubscribeMessage('createRoom')
   async onCreateRoom(socket: Socket, room: RoomDto) :Promise<room>{
    // console.log(this.player.username)
-   return await this.roomService.createRoom(room, this.player)
+   console.log(room);
+   console.log(socket.data.player);
+   return await this.roomService.createRoom(room, socket.data.player);
   //  console.log(`${socket.id}`)
   // console.log(room);
   }

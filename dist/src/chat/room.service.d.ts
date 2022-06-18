@@ -7,4 +7,5 @@ export declare class RoomService {
     constructor(roomRepository: roomRepository);
     createRoom(RoomDto: RoomDto, creator: player): Promise<room>;
     getRoomsForUser(id: number): Promise<room[]>;
+    addUserToRoom(room: room, user: player): Promise<room>;
 }

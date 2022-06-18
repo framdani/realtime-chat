@@ -8,12 +8,13 @@ export class roomRepository extends Repository<room>{
 
     async createRoom(RoomDto:RoomDto, creator : player):Promise<room>{
 
-        const {name, isChannel,isPublic,password} = RoomDto;
+        const {name,password} = RoomDto;
 
         const Room = new room();
         Room.name = name;
-        Room.isChannel = isChannel;
-        Room.isPublic = isPublic;
+        Room.isChannel = true;
+        if (password)
+            Room.isPublic = false;
         Room.password = password;
         Room.players = [creator];
 
@@ -37,6 +38,11 @@ export class roomRepository extends Repository<room>{
 
        return rooms;
 
+    }
+
+    async addUserToRoom(room:room, user:player):Promise<room>{
+        await room.players.push(user);
+        return room;
     }
 
 }
