@@ -21,6 +21,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   title:any[]=[];
   player:player;
 
+  //! add function to getUserFromSoccket 
 
   constructor(private authService:AuthService, private roomService:RoomService){}
   //send data to the client
@@ -81,12 +82,10 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   }
 
   @SubscribeMessage('createRoom')
-  async onCreateRoom(socket: Socket, room: RoomDto) :Promise<room>{
-   // console.log(this.player.username)
-   console.log(room);
-   console.log(socket.data.player);
-   return await this.roomService.createRoom(room, socket.data.player);
-  //  console.log(`${socket.id}`)
-  // console.log(room);
+  async onCreateRoom(socket: Socket, room: RoomDto){
+   await this.roomService.createRoom(room, socket.data.player);
+   const rooms = await this.roomService.getRoomsForUser(this.decoded.id);
+   this.server.to(socket.id).emit('message', rooms);
+
   }
 }

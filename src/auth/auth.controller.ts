@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthCredentials } from './dto/auth-credentials';
 import { player } from './player.entity';
@@ -12,6 +12,11 @@ export class AuthController {
     @Get('/users')
     getUsers():Promise<player[]>{
         return this.AuthService.getUsers();
+    }
+
+    @Get('/find-by-username')
+    findAllByUsername(@Query('username') username:string):Promise<player[]>{
+        return this.AuthService.findAllByUsername(username);
     }
 
     @Post('/signup')

@@ -3,7 +3,6 @@ import { Socket, Server } from 'socket.io';
 import { AuthService } from 'src/auth/auth.service';
 import { player } from 'src/auth/player.entity';
 import { RoomDto } from '../dto/room-dto';
-import { room } from '../room.entity';
 import { RoomService } from '../room.service';
 export declare class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
     private authService;
@@ -18,5 +17,5 @@ export declare class ChatGateway implements OnGatewayInit, OnGatewayConnection, 
     handleConnection(client: Socket): Promise<boolean | void>;
     private disconnect;
     handleDisconnect(client: any): void;
-    onCreateRoom(socket: Socket, room: RoomDto): Promise<room>;
+    onCreateRoom(socket: Socket, room: RoomDto): Promise<void>;
 }

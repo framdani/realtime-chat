@@ -53,9 +53,9 @@ let ChatGateway = class ChatGateway {
         console.log(`On Disconnet ... ! ${client.id}`);
     }
     async onCreateRoom(socket, room) {
-        console.log(room);
-        console.log(socket.data.player);
-        return await this.roomService.createRoom(room, socket.data.player);
+        await this.roomService.createRoom(room, socket.data.player);
+        const rooms = await this.roomService.getRoomsForUser(this.decoded.id);
+        this.server.to(socket.id).emit('message', rooms);
     }
 };
 __decorate([

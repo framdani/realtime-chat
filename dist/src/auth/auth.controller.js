@@ -24,6 +24,9 @@ let AuthController = class AuthController {
     getUsers() {
         return this.AuthService.getUsers();
     }
+    findAllByUsername(username) {
+        return this.AuthService.findAllByUsername(username);
+    }
     createUser(AuthCredentials) {
         return this.AuthService.signUp(AuthCredentials);
     }
@@ -38,6 +41,13 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "getUsers", null);
+__decorate([
+    (0, common_1.Get)('/find-by-username'),
+    __param(0, (0, common_1.Query)('username')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "findAllByUsername", null);
 __decorate([
     (0, common_1.Post)('/signup'),
     (0, common_1.UsePipes)(common_1.ValidationPipe),
