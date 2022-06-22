@@ -17,6 +17,7 @@ const common_1 = require("@nestjs/common");
 const jwt_1 = require("@nestjs/jwt");
 const typeorm_1 = require("@nestjs/typeorm");
 const player_repository_1 = require("./player.repository");
+const typeorm_2 = require("typeorm");
 let AuthService = class AuthService {
     constructor(PlayerRepository, jwtService) {
         this.PlayerRepository = PlayerRepository;
@@ -29,7 +30,11 @@ let AuthService = class AuthService {
         return this.PlayerRepository.getUsers();
     }
     async getUserById(id) { return this.PlayerRepository.getUserById(id); }
+<<<<<<< HEAD
     async getUserByUsername(username) { return this.PlayerRepository.getUserByUsername(username); }
+=======
+    async usernameExist(username) { return this.PlayerRepository.usernameExist(username); }
+>>>>>>> a69de9081eb4922bb6672fc30697ce955a970dfe
     async login(AuthCredentials) {
         const user = await this.PlayerRepository.validateUserPassword(AuthCredentials);
         if (!user)
@@ -42,6 +47,9 @@ let AuthService = class AuthService {
     }
     verifyJwt(jwt) {
         return this.jwtService.verifyAsync(jwt);
+    }
+    async findAllByUsername(username) {
+        return await this.PlayerRepository.find({ where: { username: (0, typeorm_2.Like)(`%${username}%`) } });
     }
 };
 AuthService = __decorate([

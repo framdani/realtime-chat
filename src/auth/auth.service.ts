@@ -5,7 +5,7 @@ import { AuthCredentials } from './dto/auth-credentials';
 import { JwtPyload } from './jwt-payload.interface';
 import { player } from './player.entity';
 import { playerRepository } from './player.repository';
-
+import {Like} from "typeorm";
 @Injectable()
 export class AuthService {
     constructor( 
@@ -28,6 +28,8 @@ export class AuthService {
    async getUserById(id:number):Promise<player>{return this.PlayerRepository.getUserById(id);}
    async getUserByUsername(username:string):Promise<player>{return this.PlayerRepository.getUserByUsername(username);}
 
+ //  async usernameExist(username:string):Promise<player>{return this.PlayerRepository.usernameExist(username);}
+
     async login(AuthCredentials:AuthCredentials):Promise<{accessToken : string}>{
         const user= await this.PlayerRepository.validateUserPassword(AuthCredentials);
         if (!user)
@@ -43,4 +45,11 @@ export class AuthService {
     verifyJwt(jwt: string): Promise<any> {
         return this.jwtService.verifyAsync(jwt);
       }
+
+    async findAllByUsername(username:string):Promise<player[]>{
+        return  await this.PlayerRepository.find(
+            {where:{username:Like(`%${username}%`) }}
+        );
+    }
+
 }

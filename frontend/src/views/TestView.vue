@@ -41,7 +41,7 @@ export default {
 
     methods:{
         fetchUsers(){
-        axios.get(`${server.baseURL}/api/users`, {headers:{'Authorization' : `Bearer ${localStorage.getItem('user')}`}}).then(
+        axios.get(`${server.baseURL}/api/find-by-username`, {headers:{'Authorization' : `Bearer ${localStorage.getItem('user')}`}}).then(
           data => {(this.players = data.data);
         // axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('user')}`;}
     })},

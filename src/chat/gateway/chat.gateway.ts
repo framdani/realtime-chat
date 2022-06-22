@@ -22,6 +22,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   player:player;
   players:player[]=[];
 
+  //! add function to getUserFromSoccket 
 
   constructor(private authService:AuthService, private roomService:RoomService){}
   //send data to the client

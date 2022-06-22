@@ -9,9 +9,14 @@ export declare class AuthService {
     signUp(AuthCredentials: AuthCredentials): Promise<player>;
     getUsers(): Promise<player[]>;
     getUserById(id: number): Promise<player>;
+<<<<<<< HEAD
     getUserByUsername(username: string): Promise<player>;
+=======
+    usernameExist(username: string): Promise<player>;
+>>>>>>> a69de9081eb4922bb6672fc30697ce955a970dfe
     login(AuthCredentials: AuthCredentials): Promise<{
         accessToken: string;
     }>;
     verifyJwt(jwt: string): Promise<any>;
+    findAllByUsername(username: string): Promise<player[]>;
 }

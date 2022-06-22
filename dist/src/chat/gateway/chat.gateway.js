@@ -54,6 +54,7 @@ let ChatGateway = class ChatGateway {
         console.log(`On Disconnet ... ! ${client.id}`);
     }
     async onCreateRoom(socket, room) {
+<<<<<<< HEAD
         const usernames = room.players;
         for (var username of usernames) {
             console.log(username);
@@ -68,6 +69,11 @@ let ChatGateway = class ChatGateway {
         this.user.map(x => x.emit("message", rooms));
         this.players.splice(0);
         this.user.splice(0);
+=======
+        await this.roomService.createRoom(room, socket.data.player);
+        const rooms = await this.roomService.getRoomsForUser(this.decoded.id);
+        this.server.to(socket.id).emit('message', rooms);
+>>>>>>> a69de9081eb4922bb6672fc30697ce955a970dfe
     }
 };
 __decorate([
