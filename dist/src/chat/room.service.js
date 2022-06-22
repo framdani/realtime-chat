@@ -20,8 +20,8 @@ let RoomService = class RoomService {
     constructor(roomRepository) {
         this.roomRepository = roomRepository;
     }
-    async createRoom(RoomDto, creator) {
-        return await this.roomRepository.createRoom(RoomDto, creator);
+    async createRoom(RoomDto, creators) {
+        return await this.roomRepository.createRoom(RoomDto, creators);
     }
     async getRoomsForUser(id) {
         return await this.roomRepository.getRoomsForUser(id);

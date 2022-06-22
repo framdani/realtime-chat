@@ -6,7 +6,7 @@ import { player } from "src/auth/player.entity";
 @EntityRepository(room)
 export class roomRepository extends Repository<room>{
 
-    async createRoom(RoomDto:RoomDto, creator : player):Promise<room>{
+    async createRoom(RoomDto:RoomDto, creators : player[]):Promise<room>{
 
         const {name,password} = RoomDto;
 
@@ -16,7 +16,8 @@ export class roomRepository extends Repository<room>{
         if (password)
             Room.isPublic = false;
         Room.password = password;
-        Room.players = [creator];
+        Room.players = creators;
+        console.log(Room.players);
 
 
         await Room.save();

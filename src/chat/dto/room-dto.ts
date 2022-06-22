@@ -11,7 +11,7 @@ export class RoomDto{
     // isPublic:boolean;
     password:string;
 
-    players:player[];
+    players:any[];
     created_at:Date;
     updated_at:Date;
 

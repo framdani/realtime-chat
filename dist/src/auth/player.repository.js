@@ -48,6 +48,12 @@ let playerRepository = class playerRepository extends typeorm_1.Repository {
             return user;
         return null;
     }
+    async getUserByUsername(username) {
+        const user = await this.findOne({ username });
+        if (user)
+            return user;
+        return null;
+    }
     async usernameExist(username) {
         const user = await this.findOne({ username });
         if (user)

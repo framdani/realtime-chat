@@ -1,24 +1,19 @@
 <template>
   <div class="container">
-    <form @submit.prevent="sendMessage" >
       <div>
       <input v-model = "room.name" placeholder="channel_name" type="text"/> <br><br>
       <input v-model = "room.isPublic" /> <br><br>
       <input v-model="room.password" placeholder="password" type="text"/> <br><br>
-      <input v-model="room.players" placeholder="add players"/> <br><br>
-      <button type="submit" > create channel</button>
+      <input v-model="user" placeholder="add players"/> <button @click="addMember">Add member</button><br><br>
+      <button type="submit" @click="sendMessage" > create channel</button>
       </div>
-    </form>
 
     <div class="chatroom">
     <div>
       <h1>rooms</h1>
-      <form @submit.prevent="receiveMessage">
       <MDBListGroup>
         <MDBListGroupItem v-for="room in title" :key="room._id" tag="a" href="#" action>{{room.name}} : {{room.id}}<br></MDBListGroupItem>
       </MDBListGroup>  
-      <button type="submit" >Display rooms</button>
-      </form>
     </div>
 
     <div>
@@ -30,30 +25,24 @@
 </template>
 
 <script>
-
   import { MDBListGroup, MDBListGroupItem } from "mdb-vue-ui-kit";
-
 import io from "socket.io-client";
 export default {
   components: {
       MDBListGroup,
       MDBListGroupItem
     },
-  ///name: 'App',
   data() {
     return  {
         message:{},
+        user:'',
         title:[],
-        // titel:[],
         connection: null,
-
         room: {
           name:"",
           password:"",
           players:[],
-        }
-
-        
+        }        
     }
   },
   methods: {
@@ -68,14 +57,17 @@ export default {
         }
         this.connection.emit("createRoom", roomdata);
         console.log(roomdata);
+        this.room.players.splice(0);
         //I should sent a room
     },
     //GeMytRooms()
     receiveMessage(){
         console.log("Message received !")
-       this.connection = io('http://127.0.0.1:3000', {extraHeaders: { Authorization : `Bearer ${localStorage.getItem('user')}`}})
+      // this.connection = io('http://127.0.0.1:3000', {extraHeaders: { Authorization : `Bearer ${localStorage.getItem('user')}`}})
         this.connection.on("message", (data) => {this.title = data;console.log("++"+data)})
-        //console.log(data) //Print data
+    },
+    addMember(){
+      this.room.players.push(this.user);
     }
   },
   created(){
@@ -83,9 +75,7 @@ export default {
     this.connection = io('http://127.0.0.1:3000', {extraHeaders: { Authorization : `Bearer ${localStorage.getItem('user')}`}})
     alert(`Connection started ...`)
   },
-
   mounted(){
-    // this.connection = io('http://127.0.0.1:3000', {extraHeaders: { Authorization : `Bearer ${localStorage.getItem('user')}`}})
       this.connection.on("message", (data) => {this.title = data;console.log("++"+data)})
   }
   
@@ -99,5 +89,4 @@ export default {
   justify-content:center; 
   justify-content:space-evenly;
 }
-
 </style>

@@ -5,7 +5,7 @@ import { roomRepository } from './room.repository';
 export declare class RoomService {
     protected roomRepository: roomRepository;
     constructor(roomRepository: roomRepository);
-    createRoom(RoomDto: RoomDto, creator: player): Promise<room>;
+    createRoom(RoomDto: RoomDto, creators: player[]): Promise<room>;
     getRoomsForUser(id: number): Promise<room[]>;
     addUserToRoom(room: room, user: player): Promise<room>;
 }

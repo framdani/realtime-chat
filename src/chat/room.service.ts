@@ -12,8 +12,8 @@ export class RoomService {
         protected roomRepository: roomRepository,
     ){}
 
-    async createRoom(RoomDto:RoomDto, creator :player):Promise<room>{
-    return await this.roomRepository.createRoom(RoomDto, creator);
+    async createRoom(RoomDto:RoomDto, creators :player[]):Promise<room>{
+    return await this.roomRepository.createRoom(RoomDto, creators);
     }
 
     async getRoomsForUser(id:number):Promise<room[]>{

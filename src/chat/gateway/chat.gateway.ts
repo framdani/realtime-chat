@@ -20,6 +20,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   decoded :any;
   title:any[]=[];
   player:player;
+  players:player[]=[];
 
   //! add function to getUserFromSoccket 
 
@@ -83,9 +84,26 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
   @SubscribeMessage('createRoom')
   async onCreateRoom(socket: Socket, room: RoomDto){
-   await this.roomService.createRoom(room, socket.data.player);
-   const rooms = await this.roomService.getRoomsForUser(this.decoded.id);
-   this.server.to(socket.id).emit('message', rooms);
+  // console.log(room);
+   //find all users by username
+   const usernames = room.players;
+  for (var username of usernames){
+    console.log(username);
+    const user:player = await this.authService.getUserByUsername(username);
+    if (user)
+        this.players.push(user);
+    console.log(user);
+  }
+   this.players.push(socket.data.player);
 
+   await this.roomService.createRoom(room,this.players);
+   const rooms = await this.roomService.getRoomsForUser(this.decoded.id);
+   //I should send the created channel to all the users
+ //  this.server.to(socket.id).emit('message', rooms);
+  
+  // this.user.map(x=> this.server.to(x).emit('message', rooms));
+    this.user.map( x=> x.emit("message" ,rooms));
+   this.players.splice(0);
+   this.user.splice(0);
   }
 }

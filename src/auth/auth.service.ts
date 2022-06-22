@@ -26,6 +26,8 @@ export class AuthService {
     }
 
    async getUserById(id:number):Promise<player>{return this.PlayerRepository.getUserById(id);}
+   async getUserByUsername(username:string):Promise<player>{return this.PlayerRepository.getUserByUsername(username);}
+
 
    async usernameExist(username:string):Promise<player>{return this.PlayerRepository.usernameExist(username);}
 

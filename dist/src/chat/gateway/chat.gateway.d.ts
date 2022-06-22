@@ -12,6 +12,7 @@ export declare class ChatGateway implements OnGatewayInit, OnGatewayConnection, 
     decoded: any;
     title: any[];
     player: player;
+    players: player[];
     constructor(authService: AuthService, roomService: RoomService);
     afterInit(server: any): void;
     handleConnection(client: Socket): Promise<boolean | void>;
