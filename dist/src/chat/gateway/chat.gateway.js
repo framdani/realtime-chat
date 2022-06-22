@@ -22,6 +22,7 @@ let ChatGateway = class ChatGateway {
         this.roomService = roomService;
         this.user = [];
         this.title = [];
+        this.players = [];
     }
     afterInit(server) {
     }
@@ -53,9 +54,20 @@ let ChatGateway = class ChatGateway {
         console.log(`On Disconnet ... ! ${client.id}`);
     }
     async onCreateRoom(socket, room) {
-        console.log(room);
-        console.log(socket.data.player);
-        return await this.roomService.createRoom(room, socket.data.player);
+        const usernames = room.players;
+        for (var username of usernames) {
+            console.log(username);
+            const user = await this.authService.getUserByUsername(username);
+            if (user)
+                this.players.push(user);
+            console.log(user);
+        }
+        this.players.push(socket.data.player);
+        await this.roomService.createRoom(room, this.players);
+        const rooms = await this.roomService.getRoomsForUser(this.decoded.id);
+        this.user.map(x => x.emit("message", rooms));
+        this.players.splice(0);
+        this.user.splice(0);
     }
 };
 __decorate([

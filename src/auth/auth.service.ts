@@ -26,6 +26,7 @@ export class AuthService {
     }
 
    async getUserById(id:number):Promise<player>{return this.PlayerRepository.getUserById(id);}
+   async getUserByUsername(username:string):Promise<player>{return this.PlayerRepository.getUserByUsername(username);}
 
     async login(AuthCredentials:AuthCredentials):Promise<{accessToken : string}>{
         const user= await this.PlayerRepository.validateUserPassword(AuthCredentials);

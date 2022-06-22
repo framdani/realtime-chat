@@ -48,6 +48,12 @@ let playerRepository = class playerRepository extends typeorm_1.Repository {
             return user;
         return null;
     }
+    async getUserByUsername(username) {
+        const user = await this.findOne({ username });
+        if (user)
+            return user;
+        return null;
+    }
 };
 playerRepository = __decorate([
     (0, typeorm_1.EntityRepository)(player_entity_1.player)

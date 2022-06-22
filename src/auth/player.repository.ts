@@ -60,6 +60,14 @@ export class playerRepository extends Repository<player>{
         return null;
     }
 
+    async getUserByUsername(username:string):Promise<player>{
+        const user = await this.findOne({username});
+
+        if (user)
+            return user;
+        return null;
+    }
+
     //createUser()
 
     //getUser()

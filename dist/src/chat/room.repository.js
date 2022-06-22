@@ -10,7 +10,7 @@ exports.roomRepository = void 0;
 const room_entity_1 = require("./room.entity");
 const typeorm_1 = require("typeorm");
 let roomRepository = class roomRepository extends typeorm_1.Repository {
-    async createRoom(RoomDto, creator) {
+    async createRoom(RoomDto, creators) {
         const { name, password } = RoomDto;
         const Room = new room_entity_1.room();
         Room.name = name;
@@ -18,7 +18,8 @@ let roomRepository = class roomRepository extends typeorm_1.Repository {
         if (password)
             Room.isPublic = false;
         Room.password = password;
-        Room.players = [creator];
+        Room.players = creators;
+        console.log(Room.players);
         await Room.save();
         return Room;
     }

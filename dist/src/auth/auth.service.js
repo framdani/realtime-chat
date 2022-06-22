@@ -29,6 +29,7 @@ let AuthService = class AuthService {
         return this.PlayerRepository.getUsers();
     }
     async getUserById(id) { return this.PlayerRepository.getUserById(id); }
+    async getUserByUsername(username) { return this.PlayerRepository.getUserByUsername(username); }
     async login(AuthCredentials) {
         const user = await this.PlayerRepository.validateUserPassword(AuthCredentials);
         if (!user)
