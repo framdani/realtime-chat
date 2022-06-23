@@ -1,9 +1,9 @@
-import { room } from "src/chat/room.entity";
+import { membership } from "src/chat/membership.entity";
 import { BaseEntity } from "typeorm";
 export declare class player extends BaseEntity {
     id: number;
     username: string;
     password: string;
-    rooms: room[];
+    memberships: membership[];
     validatePassword(password: string): Promise<boolean>;
 }

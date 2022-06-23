@@ -1,4 +1,5 @@
 import { join } from "path";
+import { membership } from "src/chat/membership.entity";
 import { room } from "src/chat/room.entity";
 import { BaseEntity, Column, Entity, PrimaryGeneratedColumn, OneToMany, ManyToMany, JoinTable } from "typeorm";
 
@@ -14,9 +15,13 @@ export class player extends BaseEntity{
     @Column()//{select:false}
     password:string;
 
-    @ManyToMany(()=> room, channel=>channel.players)
-  //  @JoinTable()
-    rooms:room[];
+  //   @ManyToMany(()=> room, channel=>channel.players)
+  // //  @JoinTable()
+  //   rooms:room[];
+
+    @OneToMany(()=> membership, membership=>membership.player)
+    memberships : membership[];
+
 
     async validatePassword(password:string):Promise<boolean> {
         return password === this.password;

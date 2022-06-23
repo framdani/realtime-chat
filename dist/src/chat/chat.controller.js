@@ -5,21 +5,13 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ChatController = void 0;
 const common_1 = require("@nestjs/common");
-const room_service_1 = require("./room.service");
 let ChatController = class ChatController {
-    constructor(roomService) {
-        this.roomService = roomService;
-    }
 };
 ChatController = __decorate([
-    (0, common_1.Controller)('chat'),
-    __metadata("design:paramtypes", [room_service_1.RoomService])
+    (0, common_1.Controller)('chat')
 ], ChatController);
 exports.ChatController = ChatController;
 //# sourceMappingURL=chat.controller.js.map

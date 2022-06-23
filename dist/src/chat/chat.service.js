@@ -20,6 +20,12 @@ let ChatService = class ChatService {
     constructor(roomRepo) {
         this.roomRepo = roomRepo;
     }
+    async createRoom(RoomDto, creators) {
+        return await this.roomRepo.createRoom(RoomDto, creators);
+    }
+    async getRoomsForUser(id) {
+        return await this.roomRepo.getRoomsForUser(id);
+    }
 };
 ChatService = __decorate([
     (0, common_1.Injectable)(),

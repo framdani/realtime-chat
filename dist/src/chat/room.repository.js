@@ -9,6 +9,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.roomRepository = void 0;
 const room_entity_1 = require("./room.entity");
 const typeorm_1 = require("typeorm");
+const membership_entity_1 = require("./membership.entity");
+const membership_model_1 = require("./dto/membership.model");
 let roomRepository = class roomRepository extends typeorm_1.Repository {
     async createRoom(RoomDto, creators) {
         const { name, password } = RoomDto;
@@ -18,9 +20,14 @@ let roomRepository = class roomRepository extends typeorm_1.Repository {
         if (password)
             Room.isPublic = false;
         Room.password = password;
-        Room.players = creators;
-        console.log(Room.players);
         await Room.save();
+        for (var user of creators) {
+            const Membership = new membership_entity_1.membership();
+            Membership.Role = membership_model_1.RoleStatus.USER;
+            Membership.player = user;
+            Membership.room = Room;
+            await Membership.save();
+        }
         return Room;
     }
     async getRoomsForUser(playerid) {
@@ -29,10 +36,6 @@ let roomRepository = class roomRepository extends typeorm_1.Repository {
             .where('player.id = :playerid', { playerid });
         const rooms = await query.getMany();
         return rooms;
-    }
-    async addUserToRoom(room, user) {
-        await room.players.push(user);
-        return room;
     }
 };
 roomRepository = __decorate([

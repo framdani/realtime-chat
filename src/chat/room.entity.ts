@@ -1,5 +1,6 @@
 import { player } from "src/auth/player.entity";
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn, ManyToMany, CreateDateColumn, UpdateDateColumn,  JoinTable} from "typeorm";
+import { BaseEntity, Column, Entity,OneToMany, PrimaryGeneratedColumn, ManyToMany, CreateDateColumn, UpdateDateColumn,  JoinTable} from "typeorm";
+import { membership } from "./membership.entity";
 
 @Entity()
 export class room extends BaseEntity{
@@ -19,9 +20,11 @@ export class room extends BaseEntity{
     @Column()//{select:false}
     password:string;
 
-    @ManyToMany(()=>player)
-    @JoinTable()
-    players:player[];
+    // @ManyToMany(()=>player)
+    // @JoinTable()
+    // players:player[];
+    @OneToMany(()=>membership, membership=>membership.room)
+    memberships:membership[];
 
     @CreateDateColumn()
     create_at:Date;

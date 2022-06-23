@@ -9,32 +9,31 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.player = void 0;
-const membership_entity_1 = require("../chat/membership.entity");
+exports.membership = void 0;
+const player_entity_1 = require("../auth/player.entity");
 const typeorm_1 = require("typeorm");
-let player = class player extends typeorm_1.BaseEntity {
-    async validatePassword(password) {
-        return password === this.password;
-    }
+const membership_model_1 = require("./dto/membership.model");
+const room_entity_1 = require("./room.entity");
+let membership = class membership extends typeorm_1.BaseEntity {
 };
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
-], player.prototype, "id", void 0);
-__decorate([
-    (0, typeorm_1.Column)({ unique: true }),
-    __metadata("design:type", String)
-], player.prototype, "username", void 0);
+], membership.prototype, "id_membership", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
-], player.prototype, "password", void 0);
+], membership.prototype, "Role", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => membership_entity_1.membership, membership => membership.player),
-    __metadata("design:type", Array)
-], player.prototype, "memberships", void 0);
-player = __decorate([
+    (0, typeorm_1.ManyToOne)(() => player_entity_1.player, player => player.memberships),
+    __metadata("design:type", player_entity_1.player)
+], membership.prototype, "player", void 0);
+__decorate([
+    (0, typeorm_1.ManyToOne)(() => room_entity_1.room, room => room.memberships),
+    __metadata("design:type", room_entity_1.room)
+], membership.prototype, "room", void 0);
+membership = __decorate([
     (0, typeorm_1.Entity)()
-], player);
-exports.player = player;
-//# sourceMappingURL=player.entity.js.map
+], membership);
+exports.membership = membership;
+//# sourceMappingURL=membership.entity.js.map

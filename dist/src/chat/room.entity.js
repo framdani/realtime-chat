@@ -10,8 +10,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.room = void 0;
-const player_entity_1 = require("../auth/player.entity");
 const typeorm_1 = require("typeorm");
+const membership_entity_1 = require("./membership.entity");
 let room = class room extends typeorm_1.BaseEntity {
 };
 __decorate([
@@ -35,10 +35,9 @@ __decorate([
     __metadata("design:type", String)
 ], room.prototype, "password", void 0);
 __decorate([
-    (0, typeorm_1.ManyToMany)(() => player_entity_1.player),
-    (0, typeorm_1.JoinTable)(),
+    (0, typeorm_1.OneToMany)(() => membership_entity_1.membership, membership => membership.room),
     __metadata("design:type", Array)
-], room.prototype, "players", void 0);
+], room.prototype, "memberships", void 0);
 __decorate([
     (0, typeorm_1.CreateDateColumn)(),
     __metadata("design:type", Date)

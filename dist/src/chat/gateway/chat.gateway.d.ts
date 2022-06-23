@@ -2,18 +2,18 @@ import { OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit } from '@nestjs
 import { Socket, Server } from 'socket.io';
 import { AuthService } from 'src/auth/auth.service';
 import { player } from 'src/auth/player.entity';
+import { ChatService } from '../chat.service';
 import { RoomDto } from '../dto/room-dto';
-import { RoomService } from '../room.service';
 export declare class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
     private authService;
-    private roomService;
+    private chatService;
     server: Server;
     user: any[];
     decoded: any;
     title: any[];
     player: player;
     players: player[];
-    constructor(authService: AuthService, roomService: RoomService);
+    constructor(authService: AuthService, chatService: ChatService);
     afterInit(server: any): void;
     handleConnection(client: Socket): Promise<boolean | void>;
     private disconnect;

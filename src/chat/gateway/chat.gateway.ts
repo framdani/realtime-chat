@@ -4,10 +4,10 @@ import { Console } from 'console';
 import { Socket, Server } from 'socket.io';
 import { AuthService } from 'src/auth/auth.service';
 import { player } from 'src/auth/player.entity';
+import { ChatService } from '../chat.service';
 import { RoomDto } from '../dto/room-dto';
 import { room } from '../room.entity';
 
-import { RoomService } from '../room.service';
 
 //enable the client to communicate with the server
 @WebSocketGateway({cors:{origini:'http://localhost:3000'}}) //'https://hoppscotch.io', 
@@ -24,7 +24,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
   //! add function to getUserFromSoccket 
 
-  constructor(private authService:AuthService, private roomService:RoomService){}
+  constructor(private authService:AuthService, private chatService:ChatService){}
   //send data to the client
 //   @SubscribeMessage('message')
 //   handleMessage(client: any, payload: any) {
@@ -49,16 +49,20 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
       this.decoded = client.handshake.headers.authorization.split(" ")[1];
       this.decoded = await this.authService.verifyJwt(this.decoded);
       this.player = await this.authService.getUserById(this.decoded.id);
+      console.log(this.decoded.id);
+      console.log(this.player);
 
     // console.log(this.decoded.id);
     // console.log(this.player.username);
  
    if (!this.player)
-    {return this.disconnect(client);}
+    { return this.disconnect(client);}
 
-  
+      const rooms = "";
       client.data.player = this.player;
-      const rooms = await this.roomService.getRoomsForUser(this.decoded.id);
+     // const rooms = await this.chatService.getRoomsForUser(this.decoded.id);
+      
+      console.log(rooms);
   
       //if username doesn't exist close connection
 
@@ -72,7 +76,9 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     console.log(rooms);
     return this.server.to(client.id).emit('message', rooms);//rooms
 
-    }catch{return this.disconnect(client);}
+    }catch{
+      console.log('last catch');
+      return this.disconnect(client);}
   }
   private disconnect(socket: Socket) {
     socket.emit('Error', new UnauthorizedException());
@@ -96,14 +102,16 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   }
    this.players.push(socket.data.player);
 
-   await this.roomService.createRoom(room,this.players);
-   const rooms = await this.roomService.getRoomsForUser(this.decoded.id);
-   //I should send the created channel to all the users
- //  this.server.to(socket.id).emit('message', rooms);
+   await this.chatService.createRoom(room,this.players);
+   const rooms ="";
+   //const rooms = await this.chatService.getRoomsForUser(this.decoded.id);
+     //I should send the created channel to all the users
+    //  this.server.to(socket.id).emit('message', rooms);
   
-  // this.user.map(x=> this.server.to(x).emit('message', rooms));
+    // this.user.map(x=> this.server.to(x).emit('message', rooms));
+    //should store the connected users
     this.user.map( x=> x.emit("message" ,rooms));
-   this.players.splice(0);
-   this.user.splice(0);
+    this.players.splice(0);
+    this.user.splice(0);
   }
 }

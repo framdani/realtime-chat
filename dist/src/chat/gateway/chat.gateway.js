@@ -14,12 +14,12 @@ const common_1 = require("@nestjs/common");
 const websockets_1 = require("@nestjs/websockets");
 const socket_io_1 = require("socket.io");
 const auth_service_1 = require("../../auth/auth.service");
+const chat_service_1 = require("../chat.service");
 const room_dto_1 = require("../dto/room-dto");
-const room_service_1 = require("../room.service");
 let ChatGateway = class ChatGateway {
-    constructor(authService, roomService) {
+    constructor(authService, chatService) {
         this.authService = authService;
-        this.roomService = roomService;
+        this.chatService = chatService;
         this.user = [];
         this.title = [];
         this.players = [];
@@ -31,11 +31,14 @@ let ChatGateway = class ChatGateway {
             this.decoded = client.handshake.headers.authorization.split(" ")[1];
             this.decoded = await this.authService.verifyJwt(this.decoded);
             this.player = await this.authService.getUserById(this.decoded.id);
+            console.log(this.decoded.id);
+            console.log(this.player);
             if (!this.player) {
                 return this.disconnect(client);
             }
+            const rooms = "";
             client.data.player = this.player;
-            const rooms = await this.roomService.getRoomsForUser(this.decoded.id);
+            console.log(rooms);
             this.user.push(client);
             this.title.push(`${client.id}`);
             console.log(`On Connnect ... !${client.id} `);
@@ -43,6 +46,7 @@ let ChatGateway = class ChatGateway {
             return this.server.to(client.id).emit('message', rooms);
         }
         catch (_a) {
+            console.log('last catch');
             return this.disconnect(client);
         }
     }
@@ -63,8 +67,8 @@ let ChatGateway = class ChatGateway {
             console.log(user);
         }
         this.players.push(socket.data.player);
-        await this.roomService.createRoom(room, this.players);
-        const rooms = await this.roomService.getRoomsForUser(this.decoded.id);
+        await this.chatService.createRoom(room, this.players);
+        const rooms = "";
         this.user.map(x => x.emit("message", rooms));
         this.players.splice(0);
         this.user.splice(0);
@@ -82,7 +86,7 @@ __decorate([
 ], ChatGateway.prototype, "onCreateRoom", null);
 ChatGateway = __decorate([
     (0, websockets_1.WebSocketGateway)({ cors: { origini: 'http://localhost:3000' } }),
-    __metadata("design:paramtypes", [auth_service_1.AuthService, room_service_1.RoomService])
+    __metadata("design:paramtypes", [auth_service_1.AuthService, chat_service_1.ChatService])
 ], ChatGateway);
 exports.ChatGateway = ChatGateway;
 //# sourceMappingURL=chat.gateway.js.map
