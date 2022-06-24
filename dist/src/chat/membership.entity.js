@@ -23,13 +23,15 @@ __decorate([
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
-], membership.prototype, "Role", void 0);
+], membership.prototype, "role", void 0);
 __decorate([
     (0, typeorm_1.ManyToOne)(() => player_entity_1.player, player => player.memberships),
+    (0, typeorm_1.JoinColumn)({ name: "playerid" }),
     __metadata("design:type", player_entity_1.player)
 ], membership.prototype, "player", void 0);
 __decorate([
     (0, typeorm_1.ManyToOne)(() => room_entity_1.room, room => room.memberships),
+    (0, typeorm_1.JoinColumn)({ name: "roomid" }),
     __metadata("design:type", room_entity_1.room)
 ], membership.prototype, "room", void 0);
 membership = __decorate([

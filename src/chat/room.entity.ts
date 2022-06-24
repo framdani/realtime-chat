@@ -12,10 +12,10 @@ export class room extends BaseEntity{
     name:string;
 
     @Column({default:true})
-    isChannel:boolean;
+    ischannel:boolean;
 
     @Column({default:true})
-    isPublic:boolean;
+    ispublic:boolean;
 
     @Column()//{select:false}
     password:string;

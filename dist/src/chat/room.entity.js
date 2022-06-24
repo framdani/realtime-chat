@@ -25,11 +25,11 @@ __decorate([
 __decorate([
     (0, typeorm_1.Column)({ default: true }),
     __metadata("design:type", Boolean)
-], room.prototype, "isChannel", void 0);
+], room.prototype, "ischannel", void 0);
 __decorate([
     (0, typeorm_1.Column)({ default: true }),
     __metadata("design:type", Boolean)
-], room.prototype, "isPublic", void 0);
+], room.prototype, "ispublic", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)

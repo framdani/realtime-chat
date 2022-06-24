@@ -19,16 +19,16 @@ export class roomRepository extends Repository<room>{
 
         const Room = new room();
         Room.name = name;
-        Room.isChannel = true;
+        Room.ischannel = true;
         if (password)
-            Room.isPublic = false;
+            Room.ispublic = false;
         Room.password = password;
         await Room.save();
 
         for (var user of creators)
         {
             const Membership = new membership();
-            Membership.Role = RoleStatus.USER;
+            Membership.role = RoleStatus.USER;
             Membership.player = user;
             Membership.room = Room;
             await Membership.save();
@@ -56,10 +56,19 @@ export class roomRepository extends Repository<room>{
     // }
 
     async getRoomsForUser(playerid:number):Promise<room[]>{
+        //! The new query
+        
+        //select * from room where id IN (select roomid from membership where playerid=playerid)
+       
+
+       const player_query = this.createQueryBuilder().where('membership.id = :playerid', {playerid});
+       const roomsid = await player_query.getMany();
+       console.log(roomsid);
+
+
        const query = this.createQueryBuilder('room')
        .leftJoin('room.players', 'player')
        .where('player.id = :playerid', {playerid})
-
        const rooms = await query.getMany();
 
        return rooms;

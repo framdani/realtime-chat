@@ -3,8 +3,8 @@ import { membership } from "./membership.entity";
 export declare class room extends BaseEntity {
     id: number;
     name: string;
-    isChannel: boolean;
-    isPublic: boolean;
+    ischannel: boolean;
+    ispublic: boolean;
     password: string;
     memberships: membership[];
     create_at: Date;

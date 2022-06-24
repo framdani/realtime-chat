@@ -4,7 +4,7 @@ import { RoleStatus } from "./dto/membership.model";
 import { room } from "./room.entity";
 export declare class membership extends BaseEntity {
     id_membership: number;
-    Role: RoleStatus;
+    role: RoleStatus;
     player: player;
     room: room;
 }

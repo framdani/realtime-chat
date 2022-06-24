@@ -16,14 +16,14 @@ let roomRepository = class roomRepository extends typeorm_1.Repository {
         const { name, password } = RoomDto;
         const Room = new room_entity_1.room();
         Room.name = name;
-        Room.isChannel = true;
+        Room.ischannel = true;
         if (password)
-            Room.isPublic = false;
+            Room.ispublic = false;
         Room.password = password;
         await Room.save();
         for (var user of creators) {
             const Membership = new membership_entity_1.membership();
-            Membership.Role = membership_model_1.RoleStatus.USER;
+            Membership.role = membership_model_1.RoleStatus.USER;
             Membership.player = user;
             Membership.room = Room;
             await Membership.save();

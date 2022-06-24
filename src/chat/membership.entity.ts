@@ -1,5 +1,5 @@
 import { player } from "src/auth/player.entity";
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn,ManyToOne, ManyToMany, CreateDateColumn, UpdateDateColumn,  JoinTable} from "typeorm";
+import { BaseEntity, Column, Entity, PrimaryGeneratedColumn,ManyToOne, ManyToMany, CreateDateColumn, UpdateDateColumn,  JoinTable, JoinColumn} from "typeorm";
 import { RoleStatus } from "./dto/membership.model";
 import { room } from "./room.entity";
 
@@ -10,11 +10,14 @@ export class membership extends BaseEntity{
     id_membership:number;
 
     @Column()
-    Role:RoleStatus;
+    role:RoleStatus;
 
     @ManyToOne(()=> player, player=>player.memberships)
-    player:player;
+    @JoinColumn({ name: "playerid" })
+    player: player;
+    
 
     @ManyToOne(()=> room, room=>room.memberships)
+    @JoinColumn({ name:"roomid"})
     room:room;
 }
