@@ -55,8 +55,8 @@ let ChatGateway = class ChatGateway {
     handleDisconnect(client) {
         console.log(`On Disconnet ... ! ${client.id}`);
     }
-    async onCreateRoom(socket, room) {
-        const usernames = room.players;
+    async onCreateRoom(socket, roomdto) {
+        const usernames = roomdto.players;
         for (var username of usernames) {
             console.log(username);
             const user = await this.authService.getUserByUsername(username);
@@ -64,8 +64,8 @@ let ChatGateway = class ChatGateway {
                 this.players.push(user);
             console.log(user);
         }
-        this.players.push(socket.data.player);
-        await this.chatService.createRoom(room, this.players);
+        const room = await this.chatService.createRoom(roomdto, this.players);
+        await this.chatService.addMember(room, socket.data.player);
         const rooms = await this.chatService.getRoomsForUser(this.decoded.id);
         this.user.map(x => x.emit("message", rooms));
         this.players.splice(0);

@@ -40,6 +40,9 @@ let ChatService = class ChatService {
             rooms.push(await this.getRoomById(id.roomid));
         return rooms;
     }
+    async addMember(room, creator) {
+        return await this.roomRepo.addMember(room, creator);
+    }
 };
 ChatService = __decorate([
     (0, common_1.Injectable)(),

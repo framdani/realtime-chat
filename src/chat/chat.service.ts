@@ -19,10 +19,12 @@ export class ChatService {
     }
     async createRoom(RoomDto:RoomDto, creators :player[]):Promise<room>{
         return await this.roomRepo.createRoom(RoomDto, creators);
-        }
+    }
+
     async getRoomById(id:number):Promise<room>{
         return await this.roomRepo.getRoomById(id);
     }
+
     async getRoomsForUser(playerid:number):Promise<room[]>{
         
     //   const query = await this.membershipRepo.createQueryBuilder('membership')
@@ -41,13 +43,21 @@ export class ChatService {
         .where("room.id IN (:...roomsid)", { roomsid })*/
         // console.log(roomsid);
         for (var id of roomsid)
-            rooms.push( await this.getRoomById(id.roomid));
+            rooms.push(await this.getRoomById(id.roomid));
        // console.log(rooms);
         return rooms;
         //
     }
     
-        // async addUserToRoom(room:room, user:player):Promise<room>{
-        //    return await this.roomRepo.addUserToRoom(room, user);
-        // }
+    async addMember(room:room, creator:player):Promise<void>{
+        return await this.roomRepo.addMember(room, creator);
+    }
+
+    //createMessage
+
+    //getMessageforChannel
+
+    //joinChannel
+
+    //leaveChannel§ ``
 }

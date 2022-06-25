@@ -30,21 +30,17 @@ export class roomRepository extends Repository<room>{
         }
         //update the last one to be the owner
 
-        // const Membership1 = new membership();
-        // Membership1.Role = RoleStatus.USER;
-        // Membership1.player = creators[0];
-        // Membership1.room = Room;
-        // await Membership1.save();
-
-        // const Membership2 = new membership();
-        // Membership2.Role = RoleStatus.USER;
-        // Membership2.player = creators[1];
-        // Membership2.room = Room;
-        // await Membership2.save();
 
         return Room;
     }
 
+    async addMember(room:room,creator :player):Promise<void>{
+        const Membership = new membership();
+        Membership.role = RoleStatus.OWNER;
+        Membership.player = creator;
+        Membership.room = room;
+        await Membership.save();
+    }
     // async addCreatorToRoom(room:RoomDto, creator:player):Promise<room>{
     //     room.players.push(creator);
     //     return room;

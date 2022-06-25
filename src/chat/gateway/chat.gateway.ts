@@ -89,10 +89,10 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   }
 
   @SubscribeMessage('createRoom')
-  async onCreateRoom(socket: Socket, room: RoomDto){
+  async onCreateRoom(socket: Socket, roomdto: RoomDto){
   // console.log(room);
    //find all users by username
-   const usernames = room.players;
+   const usernames = roomdto.players;
   for (var username of usernames){
     console.log(username);
     const user:player = await this.authService.getUserByUsername(username);
@@ -100,9 +100,10 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         this.players.push(user);
     console.log(user);
   }
-   this.players.push(socket.data.player);
+  // this.players.push(socket.data.player);
 
-   await this.chatService.createRoom(room,this.players);
+  const room =  await this.chatService.createRoom(roomdto,this.players);
+   await this.chatService.addMember(room, socket.data.player);
    //const rooms ="";
    const rooms = await this.chatService.getRoomsForUser(this.decoded.id);
      //I should send the created channel to all the users

@@ -18,7 +18,7 @@
 
     <div>
       <h1>my room</h1>
-      {{message}}
+      <input type="text" placeholder="Enter your message"/> <button>send</button>
     </div>
     </div>
   </div>
