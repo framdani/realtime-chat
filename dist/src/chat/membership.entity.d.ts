@@ -5,6 +5,8 @@ import { room } from "./room.entity";
 export declare class membership extends BaseEntity {
     id_membership: number;
     role: RoleStatus;
+    playerid: number;
     player: player;
+    roomid: number;
     room: room;
 }

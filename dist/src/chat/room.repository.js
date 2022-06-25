@@ -30,12 +30,14 @@ let roomRepository = class roomRepository extends typeorm_1.Repository {
         }
         return Room;
     }
+    async getRoomById(id) {
+        const room = await this.findOne({ id });
+        return room;
+    }
     async getRoomsForUser(playerid) {
-        const query = this.createQueryBuilder('room')
-            .leftJoin('room.players', 'player')
-            .where('player.id = :playerid', { playerid });
-        const rooms = await query.getMany();
-        return rooms;
+        const query = await this.createQueryBuilder('membership')
+            .where('name = :playerid', { playerid });
+        console.log(await query.getMany());
     }
 };
 roomRepository = __decorate([

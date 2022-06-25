@@ -16,21 +16,37 @@ exports.ChatService = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const room_repository_1 = require("./room.repository");
+const membership_entity_1 = require("./membership.entity");
+const typeorm_2 = require("typeorm");
 let ChatService = class ChatService {
-    constructor(roomRepo) {
+    constructor(roomRepo, membershipRepo) {
         this.roomRepo = roomRepo;
+        this.membershipRepo = membershipRepo;
     }
     async createRoom(RoomDto, creators) {
         return await this.roomRepo.createRoom(RoomDto, creators);
     }
-    async getRoomsForUser(id) {
-        return await this.roomRepo.getRoomsForUser(id);
+    async getRoomById(id) {
+        return await this.roomRepo.getRoomById(id);
+    }
+    async getRoomsForUser(playerid) {
+        const roomsid = await this.membershipRepo
+            .createQueryBuilder('p')
+            .where('p.playerid = :playerid', { playerid })
+            .select(['p.roomid'])
+            .getMany();
+        const rooms = [];
+        for (var id of roomsid)
+            rooms.push(await this.getRoomById(id.roomid));
+        return rooms;
     }
 };
 ChatService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(room_repository_1.roomRepository)),
-    __metadata("design:paramtypes", [room_repository_1.roomRepository])
+    __param(1, (0, typeorm_1.InjectRepository)(membership_entity_1.membership)),
+    __metadata("design:paramtypes", [room_repository_1.roomRepository,
+        typeorm_2.Repository])
 ], ChatService);
 exports.ChatService = ChatService;
 //# sourceMappingURL=chat.service.js.map

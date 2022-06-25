@@ -58,11 +58,11 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
    if (!this.player)
     { return this.disconnect(client);}
 
-      const rooms = "";
+     // const rooms = "";
       client.data.player = this.player;
-     // const rooms = await this.chatService.getRoomsForUser(this.decoded.id);
+      const rooms = await this.chatService.getRoomsForUser(this.decoded.id);
       
-      console.log(rooms);
+     // console.log(rooms);
   
       //if username doesn't exist close connection
 
@@ -73,7 +73,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     // this.user.map( x=> x.emit("message" ,`hey ${client.id}`));
   
     //only emit value to the concerned client => for now there is no room
-    console.log(rooms);
+   // console.log(rooms);
     return this.server.to(client.id).emit('message', rooms);//rooms
 
     }catch{
@@ -103,8 +103,8 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
    this.players.push(socket.data.player);
 
    await this.chatService.createRoom(room,this.players);
-   const rooms ="";
-   //const rooms = await this.chatService.getRoomsForUser(this.decoded.id);
+   //const rooms ="";
+   const rooms = await this.chatService.getRoomsForUser(this.decoded.id);
      //I should send the created channel to all the users
     //  this.server.to(socket.id).emit('message', rooms);
   

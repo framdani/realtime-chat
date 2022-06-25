@@ -36,13 +36,11 @@ let ChatGateway = class ChatGateway {
             if (!this.player) {
                 return this.disconnect(client);
             }
-            const rooms = "";
             client.data.player = this.player;
-            console.log(rooms);
+            const rooms = await this.chatService.getRoomsForUser(this.decoded.id);
             this.user.push(client);
             this.title.push(`${client.id}`);
             console.log(`On Connnect ... !${client.id} `);
-            console.log(rooms);
             return this.server.to(client.id).emit('message', rooms);
         }
         catch (_a) {
@@ -68,7 +66,7 @@ let ChatGateway = class ChatGateway {
         }
         this.players.push(socket.data.player);
         await this.chatService.createRoom(room, this.players);
-        const rooms = "";
+        const rooms = await this.chatService.getRoomsForUser(this.decoded.id);
         this.user.map(x => x.emit("message", rooms));
         this.players.splice(0);
         this.user.splice(0);

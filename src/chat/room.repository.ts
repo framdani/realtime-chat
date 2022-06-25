@@ -10,11 +10,6 @@ import { RoleStatus } from "./dto/membership.model";
 export class roomRepository extends Repository<room>{
 
     async createRoom(RoomDto:RoomDto, creators : player[]):Promise<room>{
-        //update room entity 
-        //update player entity => user already exist
-        //update membership entity => new one
-
-
         const {name,password} = RoomDto;
 
         const Room = new room();
@@ -55,23 +50,23 @@ export class roomRepository extends Repository<room>{
     //     return room;
     // }
 
-    async getRoomsForUser(playerid:number):Promise<room[]>{
+    async getRoomById(id:number):Promise<room>{
+        const room = await this.findOne({id});
+        return room;
+    }
+
+    async getRoomsForUser(playerid:number):Promise<void>{
         //! The new query
         
         //select * from room where id IN (select roomid from membership where playerid=playerid)
-       
-
-       const player_query = this.createQueryBuilder().where('membership.id = :playerid', {playerid});
-       const roomsid = await player_query.getMany();
-       console.log(roomsid);
 
 
-       const query = this.createQueryBuilder('room')
-       .leftJoin('room.players', 'player')
-       .where('player.id = :playerid', {playerid})
-       const rooms = await query.getMany();
+       const query = await this.createQueryBuilder('membership')
+       .where('name = :playerid', {playerid})
+       console.log(await query.getMany());
+      // const rooms = await query.getMany();
 
-       return rooms;
+      // return rooms;
 
     }
 
