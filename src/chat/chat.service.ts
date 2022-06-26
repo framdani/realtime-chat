@@ -6,6 +6,8 @@ import { player } from 'src/auth/player.entity';
 import { room } from './room.entity';
 import { membership } from './membership.entity';
 import { Repository } from 'typeorm';
+import { RoleStatus } from './dto/membership.model';
+import { message } from './gateway/message.entity';
 @Injectable()
 export class ChatService {
     constructor(
@@ -14,6 +16,9 @@ export class ChatService {
 
         @InjectRepository(membership)
         protected membershipRepo:Repository<membership>,
+
+        @InjectRepository(message)
+        protected messageRepo:Repository<message>,
     ){
 
     }
@@ -49,13 +54,20 @@ export class ChatService {
         //
     }
     
-    async addMember(room:room, creator:player):Promise<void>{
-        return await this.roomRepo.addMember(room, creator);
+    async addMember(room:room, creator:player, role:RoleStatus):Promise<void>{
+        return await this.roomRepo.addMember(room, creator, role);
     }
 
     //createMessage
 
-    //getMessageforChannel
+    async getMessagesByroomId(roomid:number){
+       const query = await this.messageRepo.createQueryBuilder('message')
+       .select(['content'])
+       .where("message.roomid = :roomid", {roomid})
+       .orderBy("message.created_at");
+
+       const messages = query.getMany();
+    }
 
     //joinChannel
 

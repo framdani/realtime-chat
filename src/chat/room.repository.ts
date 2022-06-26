@@ -34,18 +34,14 @@ export class roomRepository extends Repository<room>{
         return Room;
     }
 
-    async addMember(room:room,creator :player):Promise<void>{
+    async addMember(room:room,creator :player, role:RoleStatus):Promise<void>{
         const Membership = new membership();
-        Membership.role = RoleStatus.OWNER;
+        Membership.role =role;
         Membership.player = creator;
         Membership.room = room;
         await Membership.save();
     }
-    // async addCreatorToRoom(room:RoomDto, creator:player):Promise<room>{
-    //     room.players.push(creator);
-    //     return room;
-    // }
-
+ 
     async getRoomById(id:number):Promise<room>{
         const room = await this.findOne({id});
         return room;

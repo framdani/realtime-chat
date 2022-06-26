@@ -19,4 +19,5 @@ export declare class ChatGateway implements OnGatewayInit, OnGatewayConnection, 
     private disconnect;
     handleDisconnect(client: any): void;
     onCreateRoom(socket: Socket, roomdto: RoomDto): Promise<void>;
+    onCreateMessage(): Promise<void>;
 }

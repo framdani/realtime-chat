@@ -15,6 +15,7 @@ const websockets_1 = require("@nestjs/websockets");
 const socket_io_1 = require("socket.io");
 const auth_service_1 = require("../../auth/auth.service");
 const chat_service_1 = require("../chat.service");
+const membership_model_1 = require("../dto/membership.model");
 const room_dto_1 = require("../dto/room-dto");
 let ChatGateway = class ChatGateway {
     constructor(authService, chatService) {
@@ -31,8 +32,6 @@ let ChatGateway = class ChatGateway {
             this.decoded = client.handshake.headers.authorization.split(" ")[1];
             this.decoded = await this.authService.verifyJwt(this.decoded);
             this.player = await this.authService.getUserById(this.decoded.id);
-            console.log(this.decoded.id);
-            console.log(this.player);
             if (!this.player) {
                 return this.disconnect(client);
             }
@@ -40,7 +39,7 @@ let ChatGateway = class ChatGateway {
             const rooms = await this.chatService.getRoomsForUser(this.decoded.id);
             this.user.push(client);
             this.title.push(`${client.id}`);
-            console.log(`On Connnect ... !${client.id} `);
+            console.log(`On Connnect ... !${client.id} ${this.player.username}`);
             return this.server.to(client.id).emit('message', rooms);
         }
         catch (_a) {
@@ -53,6 +52,7 @@ let ChatGateway = class ChatGateway {
         socket.disconnect();
     }
     handleDisconnect(client) {
+        this.user.splice(this.user.indexOf(`${client}`), 1);
         console.log(`On Disconnet ... ! ${client.id}`);
     }
     async onCreateRoom(socket, roomdto) {
@@ -62,14 +62,17 @@ let ChatGateway = class ChatGateway {
             const user = await this.authService.getUserByUsername(username);
             if (user)
                 this.players.push(user);
-            console.log(user);
         }
         const room = await this.chatService.createRoom(roomdto, this.players);
-        await this.chatService.addMember(room, socket.data.player);
+        await this.chatService.addMember(room, socket.data.player, membership_model_1.RoleStatus.OWNER);
         const rooms = await this.chatService.getRoomsForUser(this.decoded.id);
-        this.user.map(x => x.emit("message", rooms));
+        for (var x of this.user) {
+            console.log(`the connected users  ${x.id}`);
+            this.server.to(x.id).emit('message', rooms);
+        }
         this.players.splice(0);
-        this.user.splice(0);
+    }
+    async onCreateMessage() {
     }
 };
 __decorate([
@@ -82,6 +85,12 @@ __decorate([
     __metadata("design:paramtypes", [socket_io_1.Socket, room_dto_1.RoomDto]),
     __metadata("design:returntype", Promise)
 ], ChatGateway.prototype, "onCreateRoom", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)('createMessage'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], ChatGateway.prototype, "onCreateMessage", null);
 ChatGateway = __decorate([
     (0, websockets_1.WebSocketGateway)({ cors: { origini: 'http://localhost:3000' } }),
     __metadata("design:paramtypes", [auth_service_1.AuthService, chat_service_1.ChatService])

@@ -30,9 +30,9 @@ let roomRepository = class roomRepository extends typeorm_1.Repository {
         }
         return Room;
     }
-    async addMember(room, creator) {
+    async addMember(room, creator, role) {
         const Membership = new membership_entity_1.membership();
-        Membership.role = membership_model_1.RoleStatus.OWNER;
+        Membership.role = role;
         Membership.player = creator;
         Membership.room = room;
         await Membership.save();

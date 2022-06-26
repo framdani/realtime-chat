@@ -5,7 +5,7 @@
       <input v-model = "room.isPublic" /> <br><br>
       <input v-model="room.password" placeholder="password" type="text"/> <br><br>
       <input v-model="user" placeholder="add players"/> <button @click="addMember">Add member</button><br><br>
-      <button type="submit" @click="sendMessage" > create channel</button>
+      <button type="submit" @click="sendRoom" > create channel</button>
       </div>
 
     <div class="chatroom">
@@ -34,9 +34,9 @@ export default {
     },
   data() {
     return  {
-        message:{},
+        message:{}, //make it a table and store all the messages
         user:'',
-        title:[],
+        title:[], //containes all the rooms
         connection: null,
         room: {
           name:"",
@@ -47,7 +47,7 @@ export default {
   },
   methods: {
     //createRoomAsOwner()
-    sendMessage() {
+    sendRoom() {
         console.log('Message sent !')
        // this.room.players.push(2);
         let roomdata={
@@ -56,12 +56,12 @@ export default {
           players:this.room.players,
         }
         this.connection.emit("createRoom", roomdata);
-        console.log(roomdata);
+       // console.log(roomdata);
         this.room.players.splice(0);
         //I should sent a room
     },
     //GeMytRooms()
-    receiveMessage(){
+    receiveRooms(){
         console.log("Message received !")
       // this.connection = io('http://127.0.0.1:3000', {extraHeaders: { Authorization : `Bearer ${localStorage.getItem('user')}`}})
         this.connection.on("message", (data) => {this.title = data;console.log("++"+data)})
@@ -77,6 +77,7 @@ export default {
   },
   mounted(){
       this.connection.on("message", (data) => {this.title = data;console.log("++"+data)})
+      //this
   }
   
 }

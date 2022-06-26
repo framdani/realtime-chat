@@ -1,5 +1,6 @@
 import { player } from "src/auth/player.entity";
 import { BaseEntity, Column, Entity,OneToMany, PrimaryGeneratedColumn, ManyToMany, CreateDateColumn, UpdateDateColumn,  JoinTable} from "typeorm";
+import { message } from "./gateway/message.entity";
 import { membership } from "./membership.entity";
 
 @Entity()
@@ -26,6 +27,9 @@ export class room extends BaseEntity{
     @OneToMany(()=>membership, membership=>membership.room)
     memberships:membership[];
 
+    @OneToMany(()=>message, message=>message.room)
+    messages:message[];
+    
     @CreateDateColumn()
     create_at:Date;
 

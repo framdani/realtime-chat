@@ -5,6 +5,7 @@ import { Socket, Server } from 'socket.io';
 import { AuthService } from 'src/auth/auth.service';
 import { player } from 'src/auth/player.entity';
 import { ChatService } from '../chat.service';
+import { RoleStatus } from '../dto/membership.model';
 import { RoomDto } from '../dto/room-dto';
 import { room } from '../room.entity';
 
@@ -16,27 +17,15 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   // create a server instance from the WebSocketServer decorators.
   @WebSocketServer() server: Server;
   
-  user : any [] = [];
-  decoded :any;
+  user : any [] = []; //connected users
+  decoded :any; //store the access token without bearer
   title:any[]=[];
-  player:player;
-  players:player[]=[];
+  player:player; //get the user by the access token
+  players:player[]=[]; ///store the members of the new created channel
 
   //! add function to getUserFromSoccket 
 
   constructor(private authService:AuthService, private chatService:ChatService){}
-  //send data to the client
-//   @SubscribeMessage('message')
-//   handleMessage(client: any, payload: any) {
-//   // console.log(payload)
-// //   this.user.push(client);
-
-// //  this.user.map( x=> x.emit("sendMesssage" ,payload));
-
-
-//    this.server.emit("message", 'test');
-//  //   return 'Hello from server!';
-//   }
 
   //after a client has connected 
   afterInit(server: any) {    
@@ -49,8 +38,8 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
       this.decoded = client.handshake.headers.authorization.split(" ")[1];
       this.decoded = await this.authService.verifyJwt(this.decoded);
       this.player = await this.authService.getUserById(this.decoded.id);
-      console.log(this.decoded.id);
-      console.log(this.player);
+     // console.log(this.decoded.id);
+     // console.log(this.player.username);
 
     // console.log(this.decoded.id);
     // console.log(this.player.username);
@@ -68,7 +57,8 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
     this.user.push(client);
     this.title.push(`${client.id}`);
-    console.log(`On Connnect ... !${client.id} `)
+    console.log(`On Connnect ... !${client.id} ${this.player.username}`)
+    //console.log(this.player.username);
    // this.server.emit('message', this.title)
     // this.user.map( x=> x.emit("message" ,`hey ${client.id}`));
   
@@ -85,34 +75,49 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     socket.disconnect();
   }
   handleDisconnect(client: any) {
+    //remove this client form the connected users
+    this.user.splice(this.user.indexOf(`${client}`),1);
     console.log(`On Disconnet ... ! ${client.id}`)
   }
 
   @SubscribeMessage('createRoom')
   async onCreateRoom(socket: Socket, roomdto: RoomDto){
-  // console.log(room);
+
    //find all users by username
    const usernames = roomdto.players;
-  for (var username of usernames){
-    console.log(username);
-    const user:player = await this.authService.getUserByUsername(username);
+    for (var username of usernames){
+      console.log(username);
+      const user:player = await this.authService.getUserByUsername(username);
     if (user)
         this.players.push(user);
-    console.log(user);
+   // console.log(user);
   }
   // this.players.push(socket.data.player);
 
-  const room =  await this.chatService.createRoom(roomdto,this.players);
-   await this.chatService.addMember(room, socket.data.player);
+    const room =  await this.chatService.createRoom(roomdto,this.players);
+     await this.chatService.addMember(room, socket.data.player, RoleStatus.OWNER);
    //const rooms ="";
-   const rooms = await this.chatService.getRoomsForUser(this.decoded.id);
+    const rooms = await this.chatService.getRoomsForUser(this.decoded.id);
      //I should send the created channel to all the users
     //  this.server.to(socket.id).emit('message', rooms);
   
     // this.user.map(x=> this.server.to(x).emit('message', rooms));
     //should store the connected users
-    this.user.map( x=> x.emit("message" ,rooms));
+
+   // this.user.map( x=> x.emit("message" ,rooms));
+  //  this.user.map(x => this.server.to(x)).emit('message', rooms));
+    for (var x of this.user)
+      {
+        console.log(`the connected users  ${x.id}`);
+        this.server.to(x.id).emit('message', rooms);
+      }
+
     this.players.splice(0);
-    this.user.splice(0);
+  //  this.user.splice(0);
+  }
+
+  @SubscribeMessage('createMessage')
+  async onCreateMessage(){
+    
   }
 }
