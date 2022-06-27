@@ -42,6 +42,7 @@ export class ChatService {
         .where('p.playerid = :playerid', { playerid })
         .select(['p.roomid'])
         .getMany();
+        //console.log('faiiiled !');
 
         const rooms = [];
         /*await this.roomRepo

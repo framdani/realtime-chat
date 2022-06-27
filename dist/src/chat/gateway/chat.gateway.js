@@ -42,7 +42,9 @@ let ChatGateway = class ChatGateway {
             this.title.push(`${client.id}`);
             console.log(`On Connnect ... !${client.id} ${this.player.username}`);
             this.server.to(client.id).emit('message', rooms);
-            const messages = await this.chatService.getMessagesByroomId(rooms[0].id);
+            let messages = [];
+            if (rooms.length != 0)
+                messages = await this.chatService.getMessagesByroomId(rooms[0].id);
             for (var x of this.user) {
                 this.server.to(x.id).emit('sendMessage', messages);
             }

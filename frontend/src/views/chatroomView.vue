@@ -99,6 +99,7 @@ export default {
       }
       console.log(this.messageDto);
       this.connection.emit("createMessage",messagedata);
+      this.connection.on("sendMessage", (data)=>{this.messages = data;})
     },
     receiveMessages(id, roomname){
       this.roomName = roomname;
@@ -119,7 +120,10 @@ export default {
     alert(`Connection started ...`)
   },
   mounted(){
-      this.connection.on("message", (data) => {this.rooms = data;this.messageDto.id = this.rooms[0].id;this.roomName = this.rooms[0].name});
+      this.connection.on("message", (data) => {this.rooms = data;
+      if (this.rooms.length != 0){
+      this.messageDto.id = this.rooms[0].id;
+      this.roomName = this.rooms[0].name;}});
       this.connection.on("sendMessage", (data)=>{this.messages = data;})
      // this.messageDto.id = this.rooms[0].id;
       //add connection on for messages => and printed in a sorted way

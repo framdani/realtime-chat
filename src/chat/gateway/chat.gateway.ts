@@ -56,6 +56,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   
       //if username doesn't exist close connection
 
+
     this.user.push(client);
     this.title.push(`${client.id}`);
     console.log(`On Connnect ... !${client.id} ${this.player.username}`)
@@ -68,7 +69,10 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
      this.server.to(client.id).emit('message', rooms);//rooms
 
    // console.log(rooms[0].id);
-      const messages = await this.chatService.getMessagesByroomId(rooms[0].id);
+
+      let messages = [];
+      if (rooms.length != 0)
+          messages = await this.chatService.getMessagesByroomId(rooms[0].id);
       for (var x of this.user)
       {
       //  console.log(`the connected users  ${x.id}`);
