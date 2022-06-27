@@ -15,12 +15,15 @@
     <button v-for="room in rooms" :key="room._id" @click="receiveMessages(room.id, room.name)">{{room.name}} : {{room.id}}</button><br>
       
     </div>
-
-    <div>
+    <div v-if = "rooms.length === 0">
+    <h2>There is no chatroom. Create one or get invited.</h2>
+    </div>
+    
+    <div v-if="rooms.length !== 0">
       <table>
         <thead>
           <tr>
-            <th><h1>my room {{roomName}}</h1></th>
+            <th><h1>my room {{roomName}}</h1> <button @click="leaveChannel">Leave channel</button> </th>
           </tr>
         </thead>
 
@@ -65,7 +68,11 @@ export default {
         messageDto:{
           id:null,
           content:"",
-        }      
+        },
+        membershipdtp:{
+          roomid:null,
+          userid:null,
+        }
     }
   },
   methods: {
@@ -112,6 +119,10 @@ export default {
       this.messages.length = 0;
       axios.get(`${server.baseURL}/api/chat/room`,{params:{roomid:id}},{headers:{'Authorization' : `Bearer ${localStorage.getItem('user')}`}}).then( (data) => {this.messages = data.data; console.log(data.data);});
 
+    },
+    leaveChannel(){
+      this.connection.emit('leave-channel', this.messageDto.id);
+
     }
   },
   created(){
@@ -125,6 +136,7 @@ export default {
       this.messageDto.id = this.rooms[0].id;
       this.roomName = this.rooms[0].name;}});
       this.connection.on("sendMessage", (data)=>{this.messages = data;})
+      this.connection.on("leave-channel", (data) => {this.rooms = data;})
      // this.messageDto.id = this.rooms[0].id;
       //add connection on for messages => and printed in a sorted way
   }

@@ -82,6 +82,11 @@ export class ChatService {
        return messages;
     }
 
+    async deleteMmebership(roomid :number, playrid:number){
+        await this.membershipRepo.delete(
+            {playerid:playrid,roomid:roomid});
+    }
+
     //joinChannel
 
     //leaveChannel§ ``

@@ -83,12 +83,25 @@ let ChatGateway = class ChatGateway {
         this.decoded = socket.handshake.headers.authorization.split(" ")[1];
         this.decoded = await this.authService.verifyJwt(this.decoded);
         this.player = await this.authService.getUserById(this.decoded.id);
-        const message = await this.chatService.createMessage(messageDto, this.player);
+        await this.chatService.createMessage(messageDto, this.player);
         const messages = await this.chatService.getMessagesByroomId(messageDto.id);
         console.log(messageDto.id);
         console.log(messages);
         for (var x of this.user) {
             console.log(`the connected users  ${x.id}`);
+            this.server.to(x.id).emit('sendMessage', messages);
+        }
+    }
+    async leaveChannel(socket, roomid) {
+        this.decoded = socket.handshake.headers.authorization.split(" ")[1];
+        this.decoded = await this.authService.verifyJwt(this.decoded);
+        await this.chatService.deleteMmebership(roomid, this.decoded.id);
+        const rooms = await this.chatService.getRoomsForUser(this.decoded.id);
+        this.server.to(socket.id).emit('message', rooms);
+        let messages = [];
+        if (rooms.length != 0)
+            messages = await this.chatService.getMessagesByroomId(rooms[0].id);
+        for (var x of this.user) {
             this.server.to(x.id).emit('sendMessage', messages);
         }
     }
@@ -109,6 +122,12 @@ __decorate([
     __metadata("design:paramtypes", [socket_io_1.Socket, message_dto_1.messageDto]),
     __metadata("design:returntype", Promise)
 ], ChatGateway.prototype, "onCreateMessage", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)('leave-channel'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [socket_io_1.Socket, Number]),
+    __metadata("design:returntype", Promise)
+], ChatGateway.prototype, "leaveChannel", null);
 ChatGateway = __decorate([
     (0, websockets_1.WebSocketGateway)({ cors: { origini: 'http://localhost:3000' } }),
     __metadata("design:paramtypes", [auth_service_1.AuthService, chat_service_1.ChatService])

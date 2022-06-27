@@ -63,6 +63,9 @@ let ChatService = class ChatService {
         console.log(messages);
         return messages;
     }
+    async deleteMmebership(roomid, playrid) {
+        await this.membershipRepo.delete({ playerid: playrid, roomid: roomid });
+    }
 };
 ChatService = __decorate([
     (0, common_1.Injectable)(),

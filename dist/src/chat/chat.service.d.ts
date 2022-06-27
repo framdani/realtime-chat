@@ -18,4 +18,5 @@ export declare class ChatService {
     addMember(room: room, creator: player, role: RoleStatus): Promise<void>;
     createMessage(messageDto: messageDto, sender: player): Promise<message>;
     getMessagesByroomId(roomid: number): Promise<message[]>;
+    deleteMmebership(roomid: number, playrid: number): Promise<void>;
 }

@@ -5,6 +5,7 @@ import { Socket, Server } from 'socket.io';
 import { AuthService } from 'src/auth/auth.service';
 import { player } from 'src/auth/player.entity';
 import { ChatService } from '../chat.service';
+import { membershipDto } from '../dto/membership-dto';
 import { RoleStatus } from '../dto/membership.model';
 import { messageDto } from '../dto/message-dto';
 import { RoomDto } from '../dto/room-dto';
@@ -138,7 +139,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
       this.decoded = socket.handshake.headers.authorization.split(" ")[1];
       this.decoded = await this.authService.verifyJwt(this.decoded);
       this.player = await this.authService.getUserById(this.decoded.id);
-   const message = await this.chatService.createMessage(messageDto,this.player);
+    await this.chatService.createMessage(messageDto,this.player);
    const messages = await this.chatService.getMessagesByroomId(messageDto.id);
    console.log(messageDto.id);
    console.log(messages);
@@ -147,6 +148,31 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         console.log(`the connected users  ${x.id}`);
         this.server.to(x.id).emit('sendMessage', messages);
       }
+    
+  }
+
+  @SubscribeMessage('leave-channel')
+  async leaveChannel(socket:Socket, roomid:number){
+    this.decoded = socket.handshake.headers.authorization.split(" ")[1];
+      this.decoded = await this.authService.verifyJwt(this.decoded);
+   
+    await this.chatService.deleteMmebership(roomid, this.decoded.id);
+    const rooms = await this.chatService.getRoomsForUser(this.decoded.id);
+    this.server.to(socket.id).emit('message', rooms);//rooms
+
+   
+ 
+       let messages = [];
+       if (rooms.length != 0)
+           messages = await this.chatService.getMessagesByroomId(rooms[0].id);
+       for (var x of this.user)
+       {
+       //  console.log(`the connected users  ${x.id}`);
+         this.server.to(x.id).emit('sendMessage', messages);
+       }
+ 
+
+    //resend the rooms buy the userid
     
   }
 }
