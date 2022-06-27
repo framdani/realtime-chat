@@ -76,7 +76,8 @@ export class ChatService {
         .where("message.roomid = :roomid", {roomid})
         .orderBy("message.created_at");
 
-       const messages = query.getMany();
+       const messages = await query.getMany();
+       console.log(messages);
        return messages;
     }
 

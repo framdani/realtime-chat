@@ -40,8 +40,11 @@
 </template>
 
 <script>
-  import { MDBListGroup, MDBListGroupItem } from "mdb-vue-ui-kit";
+ // import { MDBListGroup, MDBListGroupItem } from "mdb-vue-ui-kit";
 import io from "socket.io-client";
+import { server } from "../helper";
+import axios from "axios";
+//import router from '../router';
 export default {
   // components: {
   //     MDBListGroup,
@@ -99,8 +102,15 @@ export default {
     },
     receiveMessages(id, roomname){
       this.roomName = roomname;
+      this.messageDto.id = id;
+      console.log(id);
       //getMessageby roomid
-      this.connection.on("sendMessage", (data)=>{this.messages = data;})
+      
+     // this.connection.on("sendMessage", (data)=>{this.messages = data;});
+    //  this.messages.splice(0) ;
+      this.messages.length = 0;
+      axios.get(`${server.baseURL}/api/chat/room`,{params:{roomid:id}},{headers:{'Authorization' : `Bearer ${localStorage.getItem('user')}`}}).then( (data) => {this.messages = data.data; console.log(data.data);});
+
     }
   },
   created(){
