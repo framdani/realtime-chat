@@ -7,7 +7,8 @@ import { room } from './room.entity';
 import { membership } from './membership.entity';
 import { Repository } from 'typeorm';
 import { RoleStatus } from './dto/membership.model';
-import { message } from './gateway/message.entity';
+import {  message } from './gateway/message.entity';
+import { messageDto } from './dto/message-dto';
 @Injectable()
 export class ChatService {
     constructor(
@@ -58,15 +59,25 @@ export class ChatService {
         return await this.roomRepo.addMember(room, creator, role);
     }
 
-    //createMessage
+    async createMessage(messageDto:messageDto, sender:player):Promise<message>{
+        const {id, content} = messageDto;
+        const Message = new message();
+        Message.content = content;
+        Message.player = sender;
+        Message.room = await await this.getRoomById(id);
+        await Message.save();
 
-    async getMessagesByroomId(roomid:number){
+        return Message;
+    }
+
+    async getMessagesByroomId(roomid:number):Promise<message[]>{
        const query = await this.messageRepo.createQueryBuilder('message')
-       .select(['content'])
-       .where("message.roomid = :roomid", {roomid})
-       .orderBy("message.created_at");
+        .select(['message.content','message.playerid'])
+        .where("message.roomid = :roomid", {roomid})
+        .orderBy("message.created_at");
 
        const messages = query.getMany();
+       return messages;
     }
 
     //joinChannel

@@ -16,6 +16,7 @@ const socket_io_1 = require("socket.io");
 const auth_service_1 = require("../../auth/auth.service");
 const chat_service_1 = require("../chat.service");
 const membership_model_1 = require("../dto/membership.model");
+const message_dto_1 = require("../dto/message-dto");
 const room_dto_1 = require("../dto/room-dto");
 let ChatGateway = class ChatGateway {
     constructor(authService, chatService) {
@@ -40,7 +41,11 @@ let ChatGateway = class ChatGateway {
             this.user.push(client);
             this.title.push(`${client.id}`);
             console.log(`On Connnect ... !${client.id} ${this.player.username}`);
-            return this.server.to(client.id).emit('message', rooms);
+            this.server.to(client.id).emit('message', rooms);
+            const messages = await this.chatService.getMessagesByroomId(rooms[0].id);
+            for (var x of this.user) {
+                this.server.to(x.id).emit('sendMessage', messages);
+            }
         }
         catch (_a) {
             console.log('last catch');
@@ -72,7 +77,18 @@ let ChatGateway = class ChatGateway {
         }
         this.players.splice(0);
     }
-    async onCreateMessage() {
+    async onCreateMessage(socket, messageDto) {
+        this.decoded = socket.handshake.headers.authorization.split(" ")[1];
+        this.decoded = await this.authService.verifyJwt(this.decoded);
+        this.player = await this.authService.getUserById(this.decoded.id);
+        const message = await this.chatService.createMessage(messageDto, this.player);
+        const messages = await this.chatService.getMessagesByroomId(messageDto.id);
+        console.log(messageDto.id);
+        console.log(messages);
+        for (var x of this.user) {
+            console.log(`the connected users  ${x.id}`);
+            this.server.to(x.id).emit('sendMessage', messages);
+        }
     }
 };
 __decorate([
@@ -88,7 +104,7 @@ __decorate([
 __decorate([
     (0, websockets_1.SubscribeMessage)('createMessage'),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [socket_io_1.Socket, message_dto_1.messageDto]),
     __metadata("design:returntype", Promise)
 ], ChatGateway.prototype, "onCreateMessage", null);
 ChatGateway = __decorate([

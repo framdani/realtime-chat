@@ -5,6 +5,8 @@ export declare class message extends BaseEntity {
     id: number;
     content: string;
     created_at: Date;
+    playerid: number;
+    roomid: number;
     room: room;
     player: player;
 }

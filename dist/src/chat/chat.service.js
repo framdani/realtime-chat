@@ -45,12 +45,22 @@ let ChatService = class ChatService {
     async addMember(room, creator, role) {
         return await this.roomRepo.addMember(room, creator, role);
     }
+    async createMessage(messageDto, sender) {
+        const { id, content } = messageDto;
+        const Message = new message_entity_1.message();
+        Message.content = content;
+        Message.player = sender;
+        Message.room = await await this.getRoomById(id);
+        await Message.save();
+        return Message;
+    }
     async getMessagesByroomId(roomid) {
         const query = await this.messageRepo.createQueryBuilder('message')
-            .select(['content'])
+            .select(['message.content', 'message.playerid'])
             .where("message.roomid = :roomid", { roomid })
             .orderBy("message.created_at");
         const messages = query.getMany();
+        return messages;
     }
 };
 ChatService = __decorate([

@@ -6,6 +6,7 @@ import { AuthService } from 'src/auth/auth.service';
 import { player } from 'src/auth/player.entity';
 import { ChatService } from '../chat.service';
 import { RoleStatus } from '../dto/membership.model';
+import { messageDto } from '../dto/message-dto';
 import { RoomDto } from '../dto/room-dto';
 import { room } from '../room.entity';
 
@@ -64,7 +65,15 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   
     //only emit value to the concerned client => for now there is no room
    // console.log(rooms);
-    return this.server.to(client.id).emit('message', rooms);//rooms
+     this.server.to(client.id).emit('message', rooms);//rooms
+
+   // console.log(rooms[0].id);
+      const messages = await this.chatService.getMessagesByroomId(rooms[0].id);
+      for (var x of this.user)
+      {
+      //  console.log(`the connected users  ${x.id}`);
+        this.server.to(x.id).emit('sendMessage', messages);
+      }
 
     }catch{
       console.log('last catch');
@@ -112,12 +121,28 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         this.server.to(x.id).emit('message', rooms);
       }
 
+      
+
     this.players.splice(0);
   //  this.user.splice(0);
   }
 
   @SubscribeMessage('createMessage')
-  async onCreateMessage(){
+  async onCreateMessage(socket:Socket, messageDto:messageDto){
+    //id of the room
+    //content of the message
+      this.decoded = socket.handshake.headers.authorization.split(" ")[1];
+      this.decoded = await this.authService.verifyJwt(this.decoded);
+      this.player = await this.authService.getUserById(this.decoded.id);
+   const message = await this.chatService.createMessage(messageDto,this.player);
+   const messages = await this.chatService.getMessagesByroomId(messageDto.id);
+   console.log(messageDto.id);
+   console.log(messages);
+   for (var x of this.user)
+      {
+        console.log(`the connected users  ${x.id}`);
+        this.server.to(x.id).emit('sendMessage', messages);
+      }
     
   }
 }

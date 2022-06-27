@@ -28,6 +28,14 @@ __decorate([
     __metadata("design:type", Date)
 ], message.prototype, "created_at", void 0);
 __decorate([
+    (0, typeorm_1.Column)({ name: 'playerid' }),
+    __metadata("design:type", Number)
+], message.prototype, "playerid", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ name: 'roomid' }),
+    __metadata("design:type", Number)
+], message.prototype, "roomid", void 0);
+__decorate([
     (0, typeorm_1.ManyToOne)(() => room_entity_1.room, room => room.messages),
     (0, typeorm_1.JoinColumn)({ name: "roomid" }),
     __metadata("design:type", room_entity_1.room)

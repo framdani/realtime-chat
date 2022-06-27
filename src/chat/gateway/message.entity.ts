@@ -13,6 +13,11 @@ export class message extends BaseEntity{
     @CreateDateColumn()
     created_at:Date;
 
+    @Column({ name: 'playerid' })
+    playerid: number;
+
+    @Column({ name: 'roomid' })
+    roomid: number;
 
     @ManyToOne(()=> room, room=> room.messages)
     @JoinColumn({name:"roomid"})
