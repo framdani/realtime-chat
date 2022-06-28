@@ -78,7 +78,7 @@ export class ChatService {
         .orderBy("message.created_at");
 
        const messages = await query.getMany();
-       console.log(messages);
+   //    console.log(messages);
        return messages;
     }
 

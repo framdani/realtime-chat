@@ -1,4 +1,5 @@
 import { UnauthorizedException } from '@nestjs/common';
+import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { Console } from 'console';
 import { Socket, Server } from 'socket.io';
@@ -34,26 +35,18 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   }
 
   //when a client joins the connection
-  async handleConnection(client:Socket) {
+    async handleConnection(client:Socket) {
     try
     {
       this.decoded = client.handshake.headers.authorization.split(" ")[1];
       this.decoded = await this.authService.verifyJwt(this.decoded);
       this.player = await this.authService.getUserById(this.decoded.id);
-     // console.log(this.decoded.id);
-     // console.log(this.player.username);
-
-    // console.log(this.decoded.id);
-    // console.log(this.player.username);
  
    if (!this.player)
     { return this.disconnect(client);}
 
-     // const rooms = "";
       client.data.player = this.player;
       const rooms = await this.chatService.getRoomsForUser(this.decoded.id);
-      
-     // console.log(rooms);
   
       //if username doesn't exist close connection
 
@@ -68,22 +61,26 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     //only emit value to the concerned client => for now there is no room
    // console.log(rooms);
      this.server.to(client.id).emit('message', rooms);//rooms
+     let messages = [];
+      if (rooms.length != 0)
+          messages = await this.chatService.getMessagesByroomId(rooms[0].id);
+     this.server.to(client.id).emit('sendMessage', messages);
 
    // console.log(rooms[0].id);
 
-      let messages = [];
-      if (rooms.length != 0)
-          messages = await this.chatService.getMessagesByroomId(rooms[0].id);
-      for (var x of this.user)
-      {
-      //  console.log(`the connected users  ${x.id}`);
-        this.server.to(x.id).emit('sendMessage', messages);
-      }
+      
+      // for (var x of this.user)
+      // {
+      //    console.log(`the connected users  ${x.id}`);
+      //   this.server.to(x.id).emit('sendMessage', messages);
+      // }
 
     }catch{
       console.log('last catch');
       return this.disconnect(client);}
   }
+
+  
   private disconnect(socket: Socket) {
     socket.emit('Error', new UnauthorizedException());
     socket.disconnect();
@@ -111,7 +108,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     const room =  await this.chatService.createRoom(roomdto,this.players);
      await this.chatService.addMember(room, socket.data.player, RoleStatus.OWNER);
    //const rooms ="";
-    const rooms = await this.chatService.getRoomsForUser(this.decoded.id);
+   // let rooms = await this.chatService.getRoomsForUser(this.decoded.id);
      //I should send the created channel to all the users
     //  this.server.to(socket.id).emit('message', rooms);
   
@@ -120,9 +117,14 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
    // this.user.map( x=> x.emit("message" ,rooms));
   //  this.user.map(x => this.server.to(x)).emit('message', rooms));
+    let userid:any;
+    let rooms:any;
     for (var x of this.user)
       {
         console.log(`the connected users  ${x.id}`);
+        userid = await x.handshake.headers.authorization.split(" ")[1];
+        userid = await this.authService.verifyJwt(userid);
+        rooms = await this.chatService.getRoomsForUser(userid.id);
         this.server.to(x.id).emit('message', rooms);
       }
 
@@ -140,12 +142,17 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
       this.decoded = await this.authService.verifyJwt(this.decoded);
       this.player = await this.authService.getUserById(this.decoded.id);
     await this.chatService.createMessage(messageDto,this.player);
-   const messages = await this.chatService.getMessagesByroomId(messageDto.id);
-   console.log(messageDto.id);
-   console.log(messages);
+  // const messages = await this.chatService.getMessagesByroomId(messageDto.id);
+  //  console.log(messageDto.id);
+  //  console.log(messages);
+  let userid:any;
+  let messages:any;
    for (var x of this.user)
       {
         console.log(`the connected users  ${x.id}`);
+        userid = await x.handshake.headers.authorization.split(" ")[1];
+        userid = await this.authService.verifyJwt(userid);
+        messages = await this.chatService.getMessagesByroomId(messageDto.id);
         this.server.to(x.id).emit('sendMessage', messages);
       }
     
@@ -165,11 +172,9 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
        let messages = [];
        if (rooms.length != 0)
            messages = await this.chatService.getMessagesByroomId(rooms[0].id);
-       for (var x of this.user)
-       {
+      
        //  console.log(`the connected users  ${x.id}`);
-         this.server.to(x.id).emit('sendMessage', messages);
-       }
+         this.server.to(socket.id).emit('sendMessage', messages);
  
 
     //resend the rooms buy the userid

@@ -60,7 +60,6 @@ let ChatService = class ChatService {
             .where("message.roomid = :roomid", { roomid })
             .orderBy("message.created_at");
         const messages = await query.getMany();
-        console.log(messages);
         return messages;
     }
     async deleteMmebership(roomid, playrid) {

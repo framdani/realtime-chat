@@ -132,11 +132,13 @@ export default {
   },
   mounted(){
       this.connection.on("message", (data) => {this.rooms = data;
-      if (this.rooms.length != 0){
+      if (this.rooms.length !== 0){
       this.messageDto.id = this.rooms[0].id;
       this.roomName = this.rooms[0].name;}});
       this.connection.on("sendMessage", (data)=>{this.messages = data;})
-      this.connection.on("leave-channel", (data) => {this.rooms = data;})
+      // this.connection.on("leave-channel", (data) => {
+      //   this.rooms = data;
+      //   })
      // this.messageDto.id = this.rooms[0].id;
       //add connection on for messages => and printed in a sorted way
   }

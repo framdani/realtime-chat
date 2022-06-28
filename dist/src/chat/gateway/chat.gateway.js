@@ -45,9 +45,7 @@ let ChatGateway = class ChatGateway {
             let messages = [];
             if (rooms.length != 0)
                 messages = await this.chatService.getMessagesByroomId(rooms[0].id);
-            for (var x of this.user) {
-                this.server.to(x.id).emit('sendMessage', messages);
-            }
+            this.server.to(client.id).emit('sendMessage', messages);
         }
         catch (_a) {
             console.log('last catch');
@@ -72,9 +70,13 @@ let ChatGateway = class ChatGateway {
         }
         const room = await this.chatService.createRoom(roomdto, this.players);
         await this.chatService.addMember(room, socket.data.player, membership_model_1.RoleStatus.OWNER);
-        const rooms = await this.chatService.getRoomsForUser(this.decoded.id);
+        let userid;
+        let rooms;
         for (var x of this.user) {
             console.log(`the connected users  ${x.id}`);
+            userid = await x.handshake.headers.authorization.split(" ")[1];
+            userid = await this.authService.verifyJwt(userid);
+            rooms = await this.chatService.getRoomsForUser(userid.id);
             this.server.to(x.id).emit('message', rooms);
         }
         this.players.splice(0);
@@ -84,11 +86,13 @@ let ChatGateway = class ChatGateway {
         this.decoded = await this.authService.verifyJwt(this.decoded);
         this.player = await this.authService.getUserById(this.decoded.id);
         await this.chatService.createMessage(messageDto, this.player);
-        const messages = await this.chatService.getMessagesByroomId(messageDto.id);
-        console.log(messageDto.id);
-        console.log(messages);
+        let userid;
+        let messages;
         for (var x of this.user) {
             console.log(`the connected users  ${x.id}`);
+            userid = await x.handshake.headers.authorization.split(" ")[1];
+            userid = await this.authService.verifyJwt(userid);
+            messages = await this.chatService.getMessagesByroomId(messageDto.id);
             this.server.to(x.id).emit('sendMessage', messages);
         }
     }
@@ -101,9 +105,7 @@ let ChatGateway = class ChatGateway {
         let messages = [];
         if (rooms.length != 0)
             messages = await this.chatService.getMessagesByroomId(rooms[0].id);
-        for (var x of this.user) {
-            this.server.to(x.id).emit('sendMessage', messages);
-        }
+        this.server.to(socket.id).emit('sendMessage', messages);
     }
 };
 __decorate([
