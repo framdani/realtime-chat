@@ -93,7 +93,9 @@ let ChatGateway = class ChatGateway {
             userid = await x.handshake.headers.authorization.split(" ")[1];
             userid = await this.authService.verifyJwt(userid);
             messages = await this.chatService.getMessagesByroomId(messageDto.id);
-            this.server.to(x.id).emit('sendMessage', messages);
+            console.log(messages);
+            if (await this.chatService.isMember(messageDto.id, userid))
+                this.server.to(x.id).emit('sendMessage', messages);
         }
     }
     async leaveChannel(socket, roomid) {

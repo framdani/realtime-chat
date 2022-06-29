@@ -106,7 +106,7 @@ export default {
       }
       console.log(this.messageDto);
       this.connection.emit("createMessage",messagedata);
-      this.connection.on("sendMessage", (data)=>{this.messages = data;})
+   //   this.connection.on("sendMessage", (data)=>{this.messages = data;})
     },
     receiveMessages(id, roomname){
       this.roomName = roomname;

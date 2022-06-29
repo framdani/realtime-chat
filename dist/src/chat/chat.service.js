@@ -65,6 +65,12 @@ let ChatService = class ChatService {
     async deleteMmebership(roomid, playrid) {
         await this.membershipRepo.delete({ playerid: playrid, roomid: roomid });
     }
+    async isMember(roomid, playerid) {
+        const membership = await this.membershipRepo.findOne({ playerid, roomid });
+        if (membership)
+            return membership;
+        return null;
+    }
 };
 ChatService = __decorate([
     (0, common_1.Injectable)(),

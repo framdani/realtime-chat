@@ -87,6 +87,15 @@ export class ChatService {
             {playerid:playrid,roomid:roomid});
     }
 
+    async isMember(roomid:number, playerid:number):Promise<membership>{
+
+        const membership = await this.membershipRepo.findOne({playerid, roomid});
+        if (membership)
+            return membership
+        
+            return null;
+
+    }
     //joinChannel
 
     //leaveChannel§ ``

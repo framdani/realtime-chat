@@ -142,9 +142,9 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
       this.decoded = await this.authService.verifyJwt(this.decoded);
       this.player = await this.authService.getUserById(this.decoded.id);
     await this.chatService.createMessage(messageDto,this.player);
-  // const messages = await this.chatService.getMessagesByroomId(messageDto.id);
-  //  console.log(messageDto.id);
-  //  console.log(messages);
+ 
+  //I should send the messages only to the members
+
   let userid:any;
   let messages:any;
    for (var x of this.user)
@@ -153,7 +153,10 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         userid = await x.handshake.headers.authorization.split(" ")[1];
         userid = await this.authService.verifyJwt(userid);
         messages = await this.chatService.getMessagesByroomId(messageDto.id);
-        this.server.to(x.id).emit('sendMessage', messages);
+        console.log(messages);
+        //che if it's a member before sending the messages
+        if (await this.chatService.isMember(messageDto.id, userid))
+            this.server.to(x.id).emit('sendMessage', messages);
       }
     
   }
