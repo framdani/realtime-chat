@@ -19,11 +19,13 @@ const room_repository_1 = require("./room.repository");
 const membership_entity_1 = require("./membership.entity");
 const typeorm_2 = require("typeorm");
 const message_entity_1 = require("./gateway/message.entity");
+const auth_service_1 = require("../auth/auth.service");
 let ChatService = class ChatService {
-    constructor(roomRepo, membershipRepo, messageRepo) {
+    constructor(roomRepo, membershipRepo, messageRepo, authService) {
         this.roomRepo = roomRepo;
         this.membershipRepo = membershipRepo;
         this.messageRepo = messageRepo;
+        this.authService = authService;
     }
     async createRoom(RoomDto, creators) {
         return await this.roomRepo.createRoom(RoomDto, creators);
@@ -31,13 +33,24 @@ let ChatService = class ChatService {
     async getRoomById(id) {
         return await this.roomRepo.getRoomById(id);
     }
+    async getMembersByRoomId(roomid) {
+        const usersid = await this.membershipRepo
+            .createQueryBuilder('m')
+            .where('m.roomid = :roomid', { roomid })
+            .select(['m.playerid'])
+            .getMany();
+        const members = [];
+        for (var id of usersid)
+            members.push(await this.authService.getUserById(id.playerid));
+        return members;
+    }
     async getRoomsForUser(playerid) {
         const roomsid = await this.membershipRepo
             .createQueryBuilder('p')
             .where('p.playerid = :playerid', { playerid })
             .select(['p.roomid'])
             .getMany();
-        const rooms = [];
+        let rooms = [];
         for (var id of roomsid)
             rooms.push(await this.getRoomById(id.roomid));
         return rooms;
@@ -79,7 +92,8 @@ ChatService = __decorate([
     __param(2, (0, typeorm_1.InjectRepository)(message_entity_1.message)),
     __metadata("design:paramtypes", [room_repository_1.roomRepository,
         typeorm_2.Repository,
-        typeorm_2.Repository])
+        typeorm_2.Repository,
+        auth_service_1.AuthService])
 ], ChatService);
 exports.ChatService = ChatService;
 //# sourceMappingURL=chat.service.js.map

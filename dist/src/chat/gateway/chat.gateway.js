@@ -43,9 +43,13 @@ let ChatGateway = class ChatGateway {
             console.log(`On Connnect ... !${client.id} ${this.player.username}`);
             this.server.to(client.id).emit('message', rooms);
             let messages = [];
-            if (rooms.length != 0)
+            let members = [];
+            if (rooms.length != 0) {
                 messages = await this.chatService.getMessagesByroomId(rooms[0].id);
+                members = await this.chatService.getMembersByRoomId(rooms[0].id);
+            }
             this.server.to(client.id).emit('sendMessage', messages);
+            this.server.to(client.id).emit('members', members);
         }
         catch (_a) {
             console.log('last catch');
@@ -72,12 +76,14 @@ let ChatGateway = class ChatGateway {
         await this.chatService.addMember(room, socket.data.player, membership_model_1.RoleStatus.OWNER);
         let userid;
         let rooms;
+        let members = await this.chatService.getMembersByRoomId(room.id);
         for (var x of this.user) {
             console.log(`the connected users  ${x.id}`);
             userid = await x.handshake.headers.authorization.split(" ")[1];
             userid = await this.authService.verifyJwt(userid);
             rooms = await this.chatService.getRoomsForUser(userid.id);
             this.server.to(x.id).emit('message', rooms);
+            this.server.to(x.id).emit('members', members);
         }
         this.players.splice(0);
     }
@@ -108,6 +114,17 @@ let ChatGateway = class ChatGateway {
         if (rooms.length != 0)
             messages = await this.chatService.getMessagesByroomId(rooms[0].id);
         this.server.to(socket.id).emit('sendMessage', messages);
+        let members = [];
+        members = await this.chatService.getMembersByRoomId(roomid);
+        let userid;
+        for (var x of this.user) {
+            userid = await x.handshake.headers.authorization.split(" ")[1];
+            userid = await this.authService.verifyJwt(userid);
+            if (await this.chatService.isMember(roomid, userid))
+                this.server.to(x.id).emit('members', members);
+        }
+    }
+    async joinChannel(socket, roomid) {
     }
 };
 __decorate([
@@ -132,6 +149,12 @@ __decorate([
     __metadata("design:paramtypes", [socket_io_1.Socket, Number]),
     __metadata("design:returntype", Promise)
 ], ChatGateway.prototype, "leaveChannel", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)('join-channel'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [socket_io_1.Socket, Number]),
+    __metadata("design:returntype", Promise)
+], ChatGateway.prototype, "joinChannel", null);
 ChatGateway = __decorate([
     (0, websockets_1.WebSocketGateway)({ cors: { origini: 'http://localhost:3000' } }),
     __metadata("design:paramtypes", [auth_service_1.AuthService, chat_service_1.ChatService])

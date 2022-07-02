@@ -38,7 +38,12 @@
       <input v-model ="messageDto.content" type="text" placeholder="Enter your message" /> <button @click="sendMessage">send</button>
       </table>
     </div>
+    <div>
+        <h1>Members</h1> 
+        {{members}}
     </div>
+    </div>
+    
   </div>
 </template>
 
@@ -57,6 +62,7 @@ export default {
     return  {
         messages:[], //make it a table and store all the messages
         user:'',
+        members:[],
         rooms:[], //containes all the rooms
         connection: null,
         roomName:"",
@@ -117,15 +123,33 @@ export default {
      // this.connection.on("sendMessage", (data)=>{this.messages = data;});
     //  this.messages.splice(0) ;
       this.messages.length = 0;
-      axios.get(`${server.baseURL}/api/chat/room`,{params:{roomid:id}},{headers:{'Authorization' : `Bearer ${localStorage.getItem('user')}`}}).then( (data) => {this.messages = data.data; console.log(data.data);});
+      axios.get(`${server.baseURL}/api/chat/messages`,{params:{roomid:id}},{headers:{'Authorization' : `Bearer ${localStorage.getItem('user')}`}}).then( (data) => {this.messages = data.data;});
+
+      this.fetchMembers(id);
 
     },
     leaveChannel(){
       this.connection.emit('leave-channel', this.messageDto.id);
 
+    },
+    fetchRooms(id){
+      axios.get(`${server.baseURL}/api/chat/rooms`,{params:{roomid:id}},{headers:{'Authorization' : `Bearer ${localStorage.getItem('user')}`}}).then( (data) => {this.rooms = data.data;});
+    },
+    fetchMessages(id){
+      axios.get(`${server.baseURL}/api/chat/messages`,{params:{playerid:id}},{headers:{'Authorization' : `Bearer ${localStorage.getItem('user')}`}}).then( (data) => {this.messages = data.data;});
+    },
+    fetchMembers(id){
+      axios.get(`${server.baseURL}/api/chat/members`,{params:{roomid:id}},{headers:{'Authorization' : `Bearer ${localStorage.getItem('user')}`}}).then( (data) => {this.members = data.data; console.log(data.data);});
     }
   },
   created(){
+
+    //!Get all rooms
+
+    //!Get all messages of this rooms
+
+    //!Get all members of this rooms
+
     //! setup socket connection
     this.connection = io('http://127.0.0.1:3000', {extraHeaders: { Authorization : `Bearer ${localStorage.getItem('user')}`}})
     alert(`Connection started ...`)
@@ -136,6 +160,7 @@ export default {
       this.messageDto.id = this.rooms[0].id;
       this.roomName = this.rooms[0].name;}});
       this.connection.on("sendMessage", (data)=>{this.messages = data;})
+      this.connection.on("members", (data)=>{this.members = data;})
       // this.connection.on("leave-channel", (data) => {
       //   this.rooms = data;
       //   })

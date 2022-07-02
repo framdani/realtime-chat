@@ -7,13 +7,16 @@ import { Repository } from 'typeorm';
 import { RoleStatus } from './dto/membership.model';
 import { message } from './gateway/message.entity';
 import { messageDto } from './dto/message-dto';
+import { AuthService } from 'src/auth/auth.service';
 export declare class ChatService {
     protected roomRepo: roomRepository;
     protected membershipRepo: Repository<membership>;
     protected messageRepo: Repository<message>;
-    constructor(roomRepo: roomRepository, membershipRepo: Repository<membership>, messageRepo: Repository<message>);
+    protected authService: AuthService;
+    constructor(roomRepo: roomRepository, membershipRepo: Repository<membership>, messageRepo: Repository<message>, authService: AuthService);
     createRoom(RoomDto: RoomDto, creators: player[]): Promise<room>;
     getRoomById(id: number): Promise<room>;
+    getMembersByRoomId(roomid: number): Promise<player[]>;
     getRoomsForUser(playerid: number): Promise<room[]>;
     addMember(room: room, creator: player, role: RoleStatus): Promise<void>;
     createMessage(messageDto: messageDto, sender: player): Promise<message>;

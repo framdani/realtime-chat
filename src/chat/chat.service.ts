@@ -9,6 +9,9 @@ import { Repository } from 'typeorm';
 import { RoleStatus } from './dto/membership.model';
 import {  message } from './gateway/message.entity';
 import { messageDto } from './dto/message-dto';
+import { AuthService } from 'src/auth/auth.service';
+import { playerRepository } from 'src/auth/player.repository';
+import { In } from 'typeorm';
 @Injectable()
 export class ChatService {
     constructor(
@@ -20,6 +23,9 @@ export class ChatService {
 
         @InjectRepository(message)
         protected messageRepo:Repository<message>,
+
+        protected authService:AuthService,
+        
     ){
 
     }
@@ -30,31 +36,44 @@ export class ChatService {
     async getRoomById(id:number):Promise<room>{
         return await this.roomRepo.getRoomById(id);
     }
+   
+
+    async getMembersByRoomId(roomid:number):Promise<player[]>{
+        const usersid = await this.membershipRepo
+        .createQueryBuilder('m')
+        .where('m.roomid = :roomid', { roomid })
+        .select(['m.playerid'])
+        .getMany();
+
+        const members:player[] = [];
+        for (var id of usersid)
+            members.push(await this.authService.getUserById(id.playerid));
+        return members;
+    }
 
     async getRoomsForUser(playerid:number):Promise<room[]>{
         
-    //   const query = await this.membershipRepo.createQueryBuilder('membership')
-    //   .where('membership.playerid = :playerid', {playerid})
-    //   .select(['membership.playerid'])
-    //   .getMany();
-        const roomsid = await this.membershipRepo
+       //! select * from room INNER JOIN membership ON (membership.playerid=36 and room.id=membership.roomid);
+        // const rooms = await this.roomRepo.createQueryBuilder('room')
+        // .innerJoin('membership', 'room.id = membership.roomid')
+        // .getMany();
+
+         const roomsid = await this.membershipRepo
         .createQueryBuilder('p')
         .where('p.playerid = :playerid', { playerid })
         .select(['p.roomid'])
         .getMany();
         //console.log('faiiiled !');
 
-        const rooms = [];
-        /*await this.roomRepo
-        .createQueryBuilder('room')
-        .where("room.id IN (:...roomsid)", { roomsid })*/
-        // console.log(roomsid);
+        let rooms = [];
+    
+        
         for (var id of roomsid)
             rooms.push(await this.getRoomById(id.roomid));
-       // console.log(rooms);
         return rooms;
         //
     }
+
     
     async addMember(room:room, creator:player, role:RoleStatus):Promise<void>{
         return await this.roomRepo.addMember(room, creator, role);
@@ -98,5 +117,4 @@ export class ChatService {
     }
     //joinChannel
 
-    //leaveChannel§ ``
 }

@@ -62,9 +62,13 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
    // console.log(rooms);
      this.server.to(client.id).emit('message', rooms);//rooms
      let messages = [];
+     let members = [];
       if (rooms.length != 0)
-          messages = await this.chatService.getMessagesByroomId(rooms[0].id);
+          {messages = await this.chatService.getMessagesByroomId(rooms[0].id);
+            members = await this.chatService.getMembersByRoomId(rooms[0].id);
+          }
      this.server.to(client.id).emit('sendMessage', messages);
+     this.server.to(client.id).emit('members', members);
 
    // console.log(rooms[0].id);
 
@@ -106,7 +110,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   // this.players.push(socket.data.player);
 
     const room =  await this.chatService.createRoom(roomdto,this.players);
-     await this.chatService.addMember(room, socket.data.player, RoleStatus.OWNER);
+    await this.chatService.addMember(room, socket.data.player, RoleStatus.OWNER);
    //const rooms ="";
    // let rooms = await this.chatService.getRoomsForUser(this.decoded.id);
      //I should send the created channel to all the users
@@ -119,6 +123,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   //  this.user.map(x => this.server.to(x)).emit('message', rooms));
     let userid:any;
     let rooms:any;
+    let members=await this.chatService.getMembersByRoomId(room.id);
     for (var x of this.user)
       {
         console.log(`the connected users  ${x.id}`);
@@ -126,6 +131,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         userid = await this.authService.verifyJwt(userid);
         rooms = await this.chatService.getRoomsForUser(userid.id);
         this.server.to(x.id).emit('message', rooms);
+        this.server.to(x.id).emit('members', members);
       }
 
       
@@ -154,7 +160,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         userid = await this.authService.verifyJwt(userid);
         messages = await this.chatService.getMessagesByroomId(messageDto.id);
         console.log(messages);
-        //che if it's a member before sending the messages
+        //check if it's a member before sending the messages
         if (await this.chatService.isMember(messageDto.id, userid))
             this.server.to(x.id).emit('sendMessage', messages);
       }
@@ -175,12 +181,27 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
        let messages = [];
        if (rooms.length != 0)
            messages = await this.chatService.getMessagesByroomId(rooms[0].id);
-      
        //  console.log(`the connected users  ${x.id}`);
          this.server.to(socket.id).emit('sendMessage', messages);
- 
+      let members = [];
+      members = await this.chatService.getMembersByRoomId(roomid);
+      let userid:any;
+      for (var x of this.user)
+      {
+        userid = await x.handshake.headers.authorization.split(" ")[1];
+        userid = await this.authService.verifyJwt(userid);
+        if (await this.chatService.isMember(roomid, userid))
+          this.server.to(x.id).emit('members', members);
+      }
 
     //resend the rooms buy the userid
     
   }
+
+  @SubscribeMessage('join-channel')
+  async joinChannel(socket:Socket, roomid:number){
+    //get the membership of roomid, playerid => if not exist
+    //call add member to roomid =>c onnected user id=> role=> normal member
+  }
+
 }
